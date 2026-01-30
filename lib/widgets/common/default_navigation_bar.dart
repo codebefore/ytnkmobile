@@ -24,7 +24,7 @@ class DefaultNavigationBar extends StatelessWidget {
           padding: const EdgeInsets.only(top: 20.0),
           iconSize: 24,
           inkEffect: true,
-          unselectedIconColor: Colors.indigo,
+          // unselectedIconColor: Colors.indigo,
         ),
         iconSpace: 2.0,
         elevation: 50,
