@@ -12,12 +12,16 @@ class ServiceBase {
 
   // Local development - use localhost for iOS Simulator, 10.0.2.2 for Android Emulator
   static String _getApiUrl() {
-    if (Platform.isIOS) {
-      return "http://localhost:5240/api/v1";  // iOS Simulator
-    } else if (Platform.isAndroid) {
-      return "http://10.0.2.2:5240/api/v1";  // Android Emulator
+    const useProd = bool.fromEnvironment('USE_PROD', defaultValue: false);
+    if (kReleaseMode || useProd) {
+      return "https://ytnkio-dca8dfbrh9hxgyet.germanywestcentral-01.azurewebsites.net/api/v1";
     }
-    return "http://localhost:5240/api/v1";  // Default fallback
+    if (Platform.isIOS) {
+      return "http://localhost:5240/api/v1"; // iOS Simulator
+    } else if (Platform.isAndroid) {
+      return "http://10.0.2.2:5240/api/v1"; // Android Emulator
+    }
+    return "http://localhost:5240/api/v1"; // Default fallback
   }
 
   final String apiUrl = _getApiUrl();

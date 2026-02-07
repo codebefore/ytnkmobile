@@ -11,6 +11,13 @@ class PrefsSalaryExpectationQuestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<GlobalBloc>().state;
+    final currentCurrency = state.profile.preferences.salaryCurrentCurrency;
+    final currencyValue =
+        (currentCurrency == "try" ||
+                currentCurrency == "usd" ||
+                currentCurrency == "eur")
+            ? currentCurrency
+            : "try";
 
     final expectedSalaryController = TextEditingController(
         text: state.profile.preferences.salaryExpectation);
@@ -37,12 +44,8 @@ class PrefsSalaryExpectationQuestion extends StatelessWidget {
                     itemHeight:
                         null, //dropdown menu item height fills the content
                     isExpanded: true,
-                    value: state.profile.preferences.salaryCurrentCurrency,
+                    value: currencyValue,
                     items: const [
-                      DropdownMenuItem(
-                        value: "",
-                        child: Text(""),
-                      ),
                       DropdownMenuItem(
                         value: "usd",
                         child: Text("USD"),
@@ -54,14 +57,6 @@ class PrefsSalaryExpectationQuestion extends StatelessWidget {
                       DropdownMenuItem(
                         value: "eur",
                         child: Text("EUR"),
-                      ),
-                      DropdownMenuItem(
-                        value: "gbp",
-                        child: Text("GBP"),
-                      ),
-                      DropdownMenuItem(
-                        value: "cad",
-                        child: Text("CAD"),
                       ),
                     ],
                     onChanged: (value) {

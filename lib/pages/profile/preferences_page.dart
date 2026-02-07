@@ -14,6 +14,7 @@ import 'package:ytnkio/widgets/preferences/prefs_seniority_level_question.dart';
 import 'package:ytnkio/widgets/preferences/prefs_types_of_positions_question.dart';
 import 'package:ytnkio/widgets/preferences/prefs_wanted_country_question.dart';
 import 'package:ytnkio/widgets/preferences/prefs_working_method_question.dart';
+import 'package:ytnkio/models/common/option_selection.dart';
 
 class PreferencesPage extends StatefulWidget {
   static const id = "/pages/profile/preferences_page";
@@ -25,6 +26,31 @@ class PreferencesPage extends StatefulWidget {
 }
 
 class PreferencesPageState extends State<PreferencesPage> {
+  bool _hasRequiredSelections(GlobalState state) {
+    final prefs = state.profile.preferences;
+
+    bool hasMatrixSelections(List<OptionSelection> list) {
+      if (list.isEmpty) return false;
+      return list.any((x) =>
+          x.optionKey.isNotEmpty &&
+          (x.selection == "ok" ||
+              x.selection == "maybe" ||
+              x.selection == "notok"));
+    }
+
+    final hasCurrency = prefs.salaryCurrentCurrency == "try" ||
+        prefs.salaryCurrentCurrency == "usd" ||
+        prefs.salaryCurrentCurrency == "eur";
+
+    return prefs.hiringUrgency.isNotEmpty &&
+        prefs.seniorityLevel.isNotEmpty &&
+        hasMatrixSelections(prefs.companySize) &&
+        hasMatrixSelections(prefs.companyType) &&
+        hasMatrixSelections(prefs.typeOfPosition) &&
+        hasMatrixSelections(prefs.workingMethod) &&
+        hasCurrency;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -97,13 +123,15 @@ class PreferencesPageState extends State<PreferencesPage> {
             Center(
               child: ElevatedButton.icon(
                   icon: const Icon(GlobalIcons.GENERAL_saveIcon),
-                  onPressed: () {
-                    context.read<GlobalBloc>().add(
-                          SavePreferencesEvent(
-                              profileId: state.profile.id,
-                              preferences: state.profile.preferences),
-                        );
-                  },
+                  onPressed: _hasRequiredSelections(state)
+                      ? () {
+                          context.read<GlobalBloc>().add(
+                                SavePreferencesEvent(
+                                    profileId: state.profile.id,
+                                    preferences: state.profile.preferences),
+                              );
+                        }
+                      : null,
                   style: const ButtonStyle(
                     textStyle: WidgetStatePropertyAll(
                         TextStyle(fontWeight: FontWeight.bold)),

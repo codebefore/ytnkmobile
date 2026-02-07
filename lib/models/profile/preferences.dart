@@ -6,6 +6,15 @@ import 'package:ytnkio/models/common/item.dart';
 import 'package:ytnkio/models/common/option_selection.dart';
 
 class Preferences extends Equatable {
+  static const Set<String> _validCurrencies = {"try", "usd", "eur"};
+
+  static String _normalizeCurrency(String value) {
+    if (_validCurrencies.contains(value)) {
+      return value;
+    }
+    return "try";
+  }
+
   final List<OptionSelection> companySize;
   final List<OptionSelection> companyType;
   final List<Item> sectors;
@@ -54,6 +63,8 @@ class Preferences extends Equatable {
   });
 
   Map<String, dynamic> toMap() {
+    final normalizedCurrency = _normalizeCurrency(salaryCurrentCurrency);
+
     return <String, dynamic>{
       'companySize': companySize.map((x) => x.toMap()).toList(),
       'companyType': companyType.map((x) => x.toMap()).toList(),
@@ -64,7 +75,7 @@ class Preferences extends Equatable {
       'salaryExpectation': {
         'value1': salaryCurrent,
         'value2': salaryExpectation,
-        'unit': salaryCurrentCurrency,
+        'unit': normalizedCurrency,
         'rate': 1,
       },
       'legalCountries': legalCountries.map((x) => x.toMap()).toList(),
@@ -82,9 +93,9 @@ class Preferences extends Equatable {
       hiringUrgency: "",
       seniorityLevel: "",
       salaryCurrent: "",
-      salaryCurrentCurrency: "",
+      salaryCurrentCurrency: "try",
       salaryExpectation: "",
-      salaryExpectationCurrency: "",
+      salaryExpectationCurrency: "try",
       legalCountries: [],
       wantedCountries: [],
       workingMethod: [],
@@ -95,8 +106,8 @@ class Preferences extends Equatable {
     var salaryInfo = map["salaryExpectation"];
     var salaryCurrent = salaryInfo["value1"].toString();
     var salaryExpectation = salaryInfo["value2"].toString();
-    var salaryCurrentCurrency = salaryInfo["unit"];
-    var salaryExpectationCurrency = salaryInfo["unit"];
+    var salaryCurrentCurrency = _normalizeCurrency(salaryInfo["unit"] as String);
+    var salaryExpectationCurrency = salaryCurrentCurrency;
 
     return Preferences(
       companySize:
