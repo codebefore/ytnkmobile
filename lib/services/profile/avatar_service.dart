@@ -40,7 +40,8 @@ class AvatarService extends ServiceBase {
       if (response.isSuccess) {
         return ServiceResponse.success(responseObject: response.responseObject);
       } else {
-        return ServiceResponse.fail(response.message);
+        return ServiceResponse.fail(response.message,
+            isUnauthorized: response.isUnauthorized);
       }
     } catch (e) {
       return ServiceResponse.fail(e);

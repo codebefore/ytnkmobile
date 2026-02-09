@@ -6,6 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:ytnkio/blocs/global/global_bloc.dart';
 import 'package:ytnkio/pages/auth/login_page.dart';
 import 'package:ytnkio/pages/common/landing_page.dart';
+import 'package:ytnkio/pages/common/dashboard_page.dart';
+import 'package:ytnkio/pages/profile/view_profile_page.dart';
+import 'package:ytnkio/pages/auth/email_verification_page.dart';
 
 import '../../core_module.dart';
 
@@ -45,14 +48,44 @@ class _SplashPageState extends State<SplashPage>
 
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        final isLandingComplete = context.read<GlobalBloc>().state.isLandingCompleted;
-        if (isLandingComplete) {
-          context.push(LoginPage.id);
-        } else {
-          context.push(LandingPage.id);
-        }
+        _navigateAfterSplash();
       }
     });
+  }
+
+  void _navigateAfterSplash() {
+    final state = context.read<GlobalBloc>().state;
+
+    // If restore is still processing, wait a bit and retry.
+    if (state.isProcessing && state.lastOperation == Operations.restoreSession) {
+      Future.delayed(const Duration(milliseconds: 200), _navigateAfterSplash);
+      return;
+    }
+
+    if (state.isAuthenticated) {
+      if (state.profileStatus == ProfileStatus.unknown) {
+        context.push(LoginPage.id);
+        return;
+      }
+
+      if (state.user != null && state.user!.isEmailVerified) {
+        if (state.profile.completeness > 30) {
+          context.go(DashboardPage.id);
+        } else {
+          context.go(ViewProfilePage.id);
+        }
+      } else {
+        context.go(EmailVerificationPage.id, extra: state.user);
+      }
+      return;
+    }
+
+    final isLandingComplete = state.isLandingCompleted;
+    if (isLandingComplete) {
+      context.push(LoginPage.id);
+    } else {
+      context.push(LandingPage.id);
+    }
   }
 
   @override

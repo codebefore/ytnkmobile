@@ -4,6 +4,10 @@ class RetrieveDeviceIdEvent extends GlobalEvent {
   RetrieveDeviceIdEvent();
 }
 
+class RestoreSessionEvent extends GlobalEvent {
+  RestoreSessionEvent();
+}
+
 class LoginWithEmailPasswordEvent extends GlobalEvent {
   final String email;
   final String password;

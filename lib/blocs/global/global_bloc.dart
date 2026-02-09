@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wonderpush_flutter/wonderpush_flutter.dart';
 import 'package:ytnkio/core_module.dart';
 import 'package:ytnkio/models/auth/auth_user_info.dart';
@@ -54,6 +55,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
 
     //auth (login, signup, logout, forgot password, etc.) related events
     on<RetrieveDeviceIdEvent>(_retrieveDeviceIdEvent);
+    on<RestoreSessionEvent>(_restoreSession);
     on<LoginWithEmailPasswordEvent>(_loggedInWithEmailPassword);
     on<LoginWithGoogleEvent>(_loggedInWithGoogle);
     on<LogoutEvent>(_loggedout);

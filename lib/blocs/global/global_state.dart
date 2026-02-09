@@ -334,6 +334,7 @@ enum ProfileStatus {
 
 enum Operations {
   other(value: "other"),
+  restoreSession(value: "restoreSession"),
   login(value: "login"),
   logout(value: "logout"),
   signup(value: "signup"),

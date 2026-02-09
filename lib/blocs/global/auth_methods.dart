@@ -1,6 +1,69 @@
 part of 'global_bloc.dart';
 
 extension AuthMethods on GlobalBloc {
+  FutureOr<void> _restoreSession(
+      RestoreSessionEvent event, Emitter<GlobalState> emit) async {
+    emit(state.processing(lastOperation: Operations.restoreSession));
+
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null) {
+      emit(state.success(
+        isAuthenticated: false,
+        user: AuthUserInfo.initial(),
+        profileStatus: ProfileStatus.unknown,
+        lastOperation: Operations.restoreSession,
+      ));
+      return;
+    }
+
+    try {
+      final token = await firebaseUser.getIdToken(true);
+      if (token == null || token.isEmpty) {
+        await _authService.logout();
+        emit(state.success(
+          isAuthenticated: false,
+          user: AuthUserInfo.initial(),
+          profileStatus: ProfileStatus.unknown,
+          lastOperation: Operations.restoreSession,
+        ));
+        return;
+      }
+
+      final loginResponse = await _authService.login(token, firebaseUser.uid);
+
+      if (loginResponse.isSuccess && loginResponse.responseObject != null) {
+        final userInfo = AuthUserInfo.fromJson(loginResponse.responseObject);
+        emit(state.success(
+          isAuthenticated: true,
+          user: userInfo,
+          profileStatus: ProfileStatus.unknown,
+          lastOperation: Operations.restoreSession,
+        ));
+
+        add(GetProfileFromEmailEvent(email: userInfo.email));
+      } else {
+        if (loginResponse.isUnauthorized) {
+          await _authService.logout();
+        }
+        emit(state.failure(
+          isAuthenticated: false,
+          user: AuthUserInfo.initial(),
+          profileStatus: ProfileStatus.unknown,
+          infoMessage: loginResponse.message,
+          lastOperation: Operations.restoreSession,
+        ));
+      }
+    } catch (e) {
+      emit(state.failure(
+        isAuthenticated: false,
+        user: AuthUserInfo.initial(),
+        profileStatus: ProfileStatus.unknown,
+        infoMessage: e.toString(),
+        lastOperation: Operations.restoreSession,
+      ));
+    }
+  }
+
   FutureOr<void> _retrieveDeviceIdEvent(
       RetrieveDeviceIdEvent event, Emitter<GlobalState> emit) async {
     WonderPush.subscribeToNotifications();

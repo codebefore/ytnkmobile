@@ -13,7 +13,8 @@ class ProfileService extends ServiceBase {
         return ServiceResponse.success(
             responseObject: Profile.fromJson(response.responseObject!));
       } else {
-        return ServiceResponse.fail(response.message);
+        return ServiceResponse.fail(response.message,
+            isUnauthorized: response.isUnauthorized);
       }
     } catch (e) {
       return ServiceResponse.fail(e);
@@ -29,7 +30,8 @@ class ProfileService extends ServiceBase {
         return ServiceResponse.success(
             responseObject: Profile.fromJson(response.responseObject!));
       } else {
-        return ServiceResponse.fail(response.message);
+        return ServiceResponse.fail(response.message,
+            isUnauthorized: response.isUnauthorized);
       }
     } catch (e) {
       return ServiceResponse.fail(e);
@@ -47,7 +49,8 @@ class ProfileService extends ServiceBase {
       if (response.isSuccess) {
         return ServiceResponse.success(responseObject: response.responseObject);
       } else {
-        return ServiceResponse.fail(response.message);
+        return ServiceResponse.fail(response.message,
+            isUnauthorized: response.isUnauthorized);
       }
     } catch (e) {
       return ServiceResponse.fail(e);
@@ -65,7 +68,8 @@ class ProfileService extends ServiceBase {
       if (response.isSuccess) {
         return ServiceResponse.success(responseObject: response.responseObject);
       } else {
-        return ServiceResponse.fail(response.message);
+        return ServiceResponse.fail(response.message,
+            isUnauthorized: response.isUnauthorized);
       }
     } catch (e) {
       return ServiceResponse.fail(e);
@@ -79,7 +83,8 @@ class ProfileService extends ServiceBase {
       if (response.isSuccess) {
         return ServiceResponse.success(responseObject: response.responseObject);
       } else {
-        return ServiceResponse.fail(response.message);
+        return ServiceResponse.fail(response.message,
+            isUnauthorized: response.isUnauthorized);
       }
     } catch (e) {
       return ServiceResponse.fail(e);
@@ -97,7 +102,8 @@ class ProfileService extends ServiceBase {
       if (response.isSuccess) {
         return ServiceResponse.success(responseObject: response.responseObject);
       } else {
-        return ServiceResponse.fail(response.message);
+        return ServiceResponse.fail(response.message,
+            isUnauthorized: response.isUnauthorized);
       }
     } catch (e) {
       return ServiceResponse.fail(e);
@@ -115,7 +121,8 @@ class ProfileService extends ServiceBase {
       if (response.isSuccess) {
         return ServiceResponse.success(responseObject: response.responseObject);
       } else {
-        return ServiceResponse.fail(response.message);
+        return ServiceResponse.fail(response.message,
+            isUnauthorized: response.isUnauthorized);
       }
     } catch (e) {
       return ServiceResponse.fail(e);

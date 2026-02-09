@@ -66,7 +66,8 @@ class YtnkioApp extends StatelessWidget {
         BlocProvider(
           create: (context) => GlobalBloc()
             ..add(RetrieveDeviceIdEvent())
-            ..add(RetrieveLandingStatusEvent()),
+            ..add(RetrieveLandingStatusEvent())
+            ..add(RestoreSessionEvent()),
         ),
         BlocProvider(
           create: (context) => SurveyBloc(),
