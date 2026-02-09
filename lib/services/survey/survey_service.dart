@@ -22,7 +22,7 @@ class SurveyService extends ServiceBase {
 
   Future<ServiceResponse<CanTakeSurveyResult>> canTakeSurvey(String profileId) async {
     try {
-      var response = await postAPIRequest("talent/survey/canTakeSurvey", {"profileId": profileId});
+      var response = await postAPIRequest("talent/survey/canTakeSurvey", {"profileId": profileId, "surveyWithResponses": null});
 
       if (response.isSuccess) {
         return ServiceResponse.success(

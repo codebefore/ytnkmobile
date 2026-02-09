@@ -35,7 +35,7 @@ class Choice {
       map['order'] as int,
       map['text'] as String,
       map['checked'] != null ? map['checked'] as bool : null,
-      map['percent'] != null ? double.tryParse(['percent'].toString()) : null,
+      map['percent'] != null ? double.tryParse(map['percent'].toString()) : null,
       map['selectionOrder'] != null ? map['selectionOrder'] as int : null,
     );
   }
