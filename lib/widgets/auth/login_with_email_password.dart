@@ -16,9 +16,16 @@ class LoginWithEmailPassword extends StatefulWidget {
 
 class _LoginWithEmailPasswordState extends State<LoginWithEmailPassword> {
   TextEditingController emailController =
-      TextEditingController(text: GlobalTexts.current.LOGIN_PAGE_emailExample);
-  TextEditingController passwordController = TextEditingController(
-      text: GlobalTexts.current.LOGIN_PAGE_passwordExample);
+      TextEditingController(text: "selcukkar@yandex.com");
+  TextEditingController passwordController =
+      TextEditingController(text: "Sk.3260871");
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
