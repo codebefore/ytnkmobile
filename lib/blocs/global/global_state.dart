@@ -338,6 +338,7 @@ enum Operations {
   login(value: "login"),
   logout(value: "logout"),
   signup(value: "signup"),
+  forgotPassword(value: "forgotPassword"),
   changeLanguage(value: "changeLanguage"),
   saveProfile(value: "saveProfile"),
   savePreferences(value: "savePreferences"),

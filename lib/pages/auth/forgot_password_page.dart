@@ -30,11 +30,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       title: GlobalTexts.current.FORGOT_PASSWORD_PAGE_title,
       body: BlocConsumer<GlobalBloc, GlobalState>(
         listener: (context, state) {
+          if (state.lastOperation != Operations.forgotPassword) {
+            return;
+          }
+
           if (!state.isProcessing) {
             if (state.isSuccessful) {
-              successfullyCompleted = true;
+              setState(() {
+                successfullyCompleted = true;
+              });
             } else {
-              successfullyCompleted = false;
+              setState(() {
+                successfullyCompleted = false;
+              });
 
               EasyLoading.showError(state.infoMessage);
             }

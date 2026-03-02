@@ -202,8 +202,16 @@ class AuthService extends ServiceBase {
   }
 
   Future<ServiceResponse<AuthUserInfo>> signup(
-      referenceCode, fullName, email,
-      countryCode, countryName, phone, location, password, isSocial, deviceId) async {
+      referenceCode,
+      fullName,
+      email,
+      countryCode,
+      countryName,
+      phone,
+      location,
+      password,
+      isSocial,
+      deviceId) async {
     try {
       // Step 1: Firebase Create User (Web ile tutarlı)
       final credential = await FirebaseAuth.instance
@@ -216,18 +224,21 @@ class AuthService extends ServiceBase {
       final idToken = await credential.user!.getIdToken();
 
       // Step 2: Backend Signup
-      final response = await postAPIRequest("talent/auth/signup", {
-        "referenceCode": referenceCode,
-        "fullName": fullName,
-        "email": email,
-        "countryCode": countryCode,
-        "countryName": countryName,
-        "phone": phone,
-        "location": location,
-        "password": password,
-        "isSocial": isSocial,
-        "deviceId": deviceId,
-      }, idToken: idToken!);
+      final response = await postAPIRequest(
+          "talent/auth/signup",
+          {
+            "referenceCode": referenceCode,
+            "fullName": fullName,
+            "email": email,
+            "countryCode": countryCode,
+            "countryName": countryName,
+            "phone": phone,
+            "location": location,
+            "password": password,
+            "isSocial": isSocial,
+            "deviceId": deviceId,
+          },
+          idToken: idToken!);
 
       if (response.isSuccess && response.responseObject != null) {
         final userInfo = AuthUserInfo.fromJson(response.responseObject!);
@@ -256,13 +267,17 @@ class AuthService extends ServiceBase {
   }
 
   Future<ServiceResponse<void>> forgotPassword(String email) {
-    return postAPIRequest("talent/auth/forgotPassword", {"email": email});
+    return postAPIRequest(
+      "talent/auth/forgotPassword",
+      {"email": email},
+      includeAuthorization: false,
+    );
   }
 
   Future<ServiceResponse<VerificationSentInfo>> sendVerificationEmail(
       AuthUserInfo user) async {
-    var response =
-        await postAPIRequest("talent/auth/sendVerificationEmail", {"user": user.toMap()});
+    var response = await postAPIRequest(
+        "talent/auth/sendVerificationEmail", {"user": user.toMap()});
 
     if (response.isSuccess) {
       final verificationSentInfo = VerificationSentInfo.fromJson(
@@ -275,16 +290,19 @@ class AuthService extends ServiceBase {
     return ServiceResponse.fail(response.message);
   }
 
-  Future<ServiceResponse<String>> verifyEmail(
-      String syncCode, String verificationCode, String email, String userId) async {
+  Future<ServiceResponse<String>> verifyEmail(String syncCode,
+      String verificationCode, String email, String userId) async {
     // Get fresh token to avoid expiration issues
     final freshToken = await getFreshIdToken();
 
-    return postAPIRequest("talent/auth/verifyEmail", {
-      "syncCode": syncCode,
-      "verificationCode": verificationCode,
-      "email": email,
-      "userId": userId,
-    }, idToken: freshToken);
+    return postAPIRequest(
+        "talent/auth/verifyEmail",
+        {
+          "syncCode": syncCode,
+          "verificationCode": verificationCode,
+          "email": email,
+          "userId": userId,
+        },
+        idToken: freshToken);
   }
 }

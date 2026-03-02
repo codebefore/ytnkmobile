@@ -177,9 +177,9 @@ extension AuthMethods on GlobalBloc {
 
     if (response.isSuccess && response.responseObject != null) {
       emit(state.success(
-        isAuthenticated: true,
-        user: response.responseObject,
-        profileStatus: ProfileStatus.generatingNewProfile));
+          isAuthenticated: true,
+          user: response.responseObject,
+          profileStatus: ProfileStatus.generatingNewProfile));
     } else {
       emit(state.failure(infoMessage: response.message));
     }
@@ -187,14 +187,23 @@ extension AuthMethods on GlobalBloc {
 
   FutureOr<void> _forgotPassword(
       ForgotPasswordEvent event, Emitter<GlobalState> emit) async {
-    emit(state.processing());
+    emit(state.processing(
+      lastOperation: Operations.forgotPassword,
+      infoMessage: "",
+    ));
 
     var response = await _authService.forgotPassword(event.email);
 
     if (response.isSuccess) {
-      emit(state.success());
+      emit(state.success(
+        lastOperation: Operations.forgotPassword,
+        infoMessage: "",
+      ));
     } else {
-      emit(state.failure(infoMessage: response.message));
+      emit(state.failure(
+        infoMessage: response.message,
+        lastOperation: Operations.forgotPassword,
+      ));
     }
   }
 

@@ -30,30 +30,36 @@ class ServiceBase {
 
   Future<ServiceResponse<String>> postAPIRequest(
       String service, Map<String, dynamic> parameters,
-      {String idToken = ""}) async {
+      {String idToken = "", bool includeAuthorization = true}) async {
     final url = "$apiUrl/$service";
 
     try {
-      if (idToken.isNotEmpty) {
-        setIdToken(idToken);
+      if (includeAuthorization) {
+        if (idToken.isNotEmpty) {
+          setIdToken(idToken);
+        } else {
+          idToken = await getIdToken();
+        }
       } else {
-        idToken = await getIdToken();
+        idToken = "";
+      }
+
+      final headers = <String, String>{
+        "Content-Type": "application/json",
+      };
+      if (includeAuthorization && idToken.isNotEmpty) {
+        headers["Authorization"] = "Bearer $idToken";
       }
 
       // Log request
       if (kDebugMode) {
         debugPrint('🔵 API POST Request: $url');
-        debugPrint('🔵 Headers: {"Content-Type": "application/json", "Authorization": "Bearer $idToken"}');
+        debugPrint('🔵 Headers: $headers');
         debugPrint('🔵 Body: ${json.encode(parameters)}');
       }
 
       final response = await http
-          .post(Uri.parse(url),
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer $idToken"
-              },
-              body: json.encode(parameters))
+          .post(Uri.parse(url), headers: headers, body: json.encode(parameters))
           .onError((error, stackTrace) {
         if (kDebugMode) {
           debugPrint('🔴 API Error: $error');
@@ -69,7 +75,8 @@ class ServiceBase {
       // Log response
       if (kDebugMode) {
         debugPrint('🟢 API Response: ${response.statusCode} - $url');
-        debugPrint('🟢 Body: ${response.body.length > 500 ? "${response.body.substring(0, 500)}..." : response.body}');
+        debugPrint(
+            '🟢 Body: ${response.body.length > 500 ? "${response.body.substring(0, 500)}..." : response.body}');
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -168,8 +175,7 @@ class ServiceBase {
     }
   }
 
-  Future<ServiceResponse<String>> getAPIRequest(
-      String service,
+  Future<ServiceResponse<String>> getAPIRequest(String service,
       {String idToken = ""}) async {
     final url = "$apiUrl/$service";
 
@@ -183,16 +189,14 @@ class ServiceBase {
       // Log request
       if (kDebugMode) {
         debugPrint('🔵 API GET Request: $url');
-        debugPrint('🔵 Headers: {"Content-Type": "application/json", "Authorization": "Bearer $idToken"}');
+        debugPrint(
+            '🔵 Headers: {"Content-Type": "application/json", "Authorization": "Bearer $idToken"}');
       }
 
-      final response = await http
-          .get(Uri.parse(url),
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer $idToken"
-              })
-          .onError((error, stackTrace) {
+      final response = await http.get(Uri.parse(url), headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken"
+      }).onError((error, stackTrace) {
         if (kDebugMode) {
           debugPrint('🔴 API Error: $error');
         }
@@ -207,7 +211,8 @@ class ServiceBase {
       // Log response
       if (kDebugMode) {
         debugPrint('🟢 API Response: ${response.statusCode} - $url');
-        debugPrint('🟢 Body: ${response.body.length > 500 ? "${response.body.substring(0, 500)}..." : response.body}');
+        debugPrint(
+            '🟢 Body: ${response.body.length > 500 ? "${response.body.substring(0, 500)}..." : response.body}');
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -228,7 +233,6 @@ class ServiceBase {
       return ServiceResponse.fail(e.toString());
     }
   }
-
 
   Future<bool> setIdToken(String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
