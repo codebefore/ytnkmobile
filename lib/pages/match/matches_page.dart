@@ -20,13 +20,8 @@ class _MatchesPageState extends State<MatchesPage> {
 
   @override
   Widget build(BuildContext context) {
-    matches = context.watch<GlobalBloc>().state.matches;
-
-    if (filter != "all") {
-      matches = matches
-          .where((element) => element.status == filter)
-          .toList();
-    }
+    final allMatches = context.watch<GlobalBloc>().state.matches;
+    matches = allMatches.where(_matchesFilter).toList();
 
     return DefaultScaffold(
       title: GlobalTexts.current.MATCHINGS_PAGE_title,
@@ -87,13 +82,23 @@ class _MatchesPageState extends State<MatchesPage> {
               ],
             ),
             const SizedBox(height: 16),
-            ...matches.asMap().entries.map((e) => MatchCard(
-                  match: e.value,
-                  cardIndex: e.key,
-                )),
+            ...matches.map((item) => MatchCard(match: item)),
           ],
         ),
       ),
     );
+  }
+
+  bool _matchesFilter(Match match) {
+    if (filter == "all") {
+      return true;
+    }
+
+    // Legacy data may use "pending" while UI filter uses "waiting".
+    if (filter == "waiting") {
+      return match.status == "waiting" || match.status == "pending";
+    }
+
+    return match.status == filter;
   }
 }

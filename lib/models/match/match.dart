@@ -51,6 +51,10 @@ class Match {
   });
 
   factory Match.fromMap(Map<String, dynamic> map) {
+    final createdAtRaw = map['createdAt'];
+    final parsedCreatedAt =
+        createdAtRaw is String ? DateTime.tryParse(createdAtRaw) : null;
+
     return Match(
       id: map['id'] ?? '',
       status: map['status'] ?? '',
@@ -65,18 +69,21 @@ class Match {
       departmentName: map['departmentName'] ?? '',
       location: map['location'] ?? '',
       seniorityLevel: map['seniorityLevel'] ?? '',
-      createdAt: DateTime.parse(map['createdAt']),
+      createdAt: parsedCreatedAt ?? DateTime.now(),
       workingMethod: map['workingMethod'] ?? '',
       salaryExpectationMin: map['salaryExpectationMin'] ?? '',
       salaryExpectationMax: map['salaryExpectationMax'] ?? '',
       salaryExpectationUnit: map['salaryExpectationUnit'] ?? '',
       employmentScope: map['employmentScope'] ?? '',
       typeOfPosition: map['typeOfPosition'] ?? '',
-      skillFitness: List<ScoreItem>.from(
-          map['skillFitness']?.map((x) => ScoreItem.fromMap(x)) ?? const []),
-      scores:
-          List<ScoreItem>.from(map['scores']?.map((x) => ScoreItem.fromMap(x)) ??
-              const []),
+      skillFitness: List<ScoreItem>.from((map['skillFitness'] as List<dynamic>?)
+              ?.map((x) => ScoreItem.fromMap(x))
+              .toList() ??
+          const []),
+      scores: List<ScoreItem>.from((map['scores'] as List<dynamic>?)
+              ?.map((x) => ScoreItem.fromMap(x))
+              .toList() ??
+          const []),
     );
   }
 
@@ -107,8 +114,7 @@ class Match {
     };
   }
 
-  factory Match.fromJson(String source) =>
-      Match.fromMap(json.decode(source));
+  factory Match.fromJson(String source) => Match.fromMap(json.decode(source));
 
   static List<Match> fromJsonList(String source) {
     List<dynamic> list = json.decode(source);

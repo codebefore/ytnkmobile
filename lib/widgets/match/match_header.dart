@@ -13,10 +13,17 @@ class MatchHeader extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Image.network(
-            //todo: change with company logo from match data
-            "https://msdynamicsworld.com/sites/default/files/meta_platforms_inc._logo.svg_.png",
-            width: 120,
+          child: CircleAvatar(
+            radius: 42,
+            backgroundColor: Colors.indigo.shade50,
+            child: Text(
+              _companyInitials(match.companyName),
+              style: const TextStyle(
+                color: Colors.indigo,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
         Text(
@@ -37,5 +44,23 @@ class MatchHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  static String _companyInitials(String companyName) {
+    final tokens = companyName
+        .trim()
+        .split(RegExp(r"\s+"))
+        .where((token) => token.isNotEmpty)
+        .toList();
+
+    if (tokens.isEmpty) {
+      return "CO";
+    }
+
+    if (tokens.length == 1) {
+      return tokens.first.substring(0, 1).toUpperCase();
+    }
+
+    return "${tokens[0][0]}${tokens[1][0]}".toUpperCase();
   }
 }

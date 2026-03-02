@@ -4,33 +4,27 @@ import 'package:moment_dart/moment_dart.dart';
 import 'package:radar_chart/radar_chart.dart';
 import 'package:ytnkio/globals/global_icons.dart';
 import 'package:ytnkio/models/match/match.dart';
+import 'package:ytnkio/models/match/score_item.dart';
 import 'package:ytnkio/pages/match/match_page.dart';
 import 'package:ytnkio/widgets/match/match_feature.dart';
 import 'package:ytnkio/widgets/match/match_tag.dart';
 
 class MatchCard extends StatelessWidget {
   final Match match;
-  final int cardIndex;
 
   const MatchCard({
     super.key,
     required this.match,
-    required this.cardIndex,
   });
 
   @override
   Widget build(BuildContext context) {
-    List<List<double>> values = [
-      [0.2, 0.4, 0.5, 0.1, 0.3, 0.7],
-      [0.3, 0.6, 0.2, 0.8, 0.4, 0.4],
-      [0.6, 0.6, 0.5, 0.2, 0.1, 0.4],
-    ];
-
-    List<String> texts = [
-      "43",
-      "68",
-      "51",
-    ];
+    const radarLength = 5;
+    final normalizedScores = _normalizeScores(match.scores, radarLength);
+    final radarValues = normalizedScores
+        .map((score) => score.score.clamp(0, 100).toDouble() / 100.0)
+        .toList();
+    final overallScore = _calculateOverallScore(match.scores);
 
     return InkWell(
       onTap: () {
@@ -51,12 +45,15 @@ class MatchCard extends StatelessWidget {
               MatchStateTag(match: match),
               const SizedBox(height: 8),
               Row(children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 24,
-                  backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage(
-                    //todo: replace with company logo
-                    "https://static.vecteezy.com/system/resources/previews/024/273/763/original/meta-logo-transparent-free-png.png",
+                  backgroundColor: Colors.indigo.shade50,
+                  child: Text(
+                    _companyInitials(match.companyName),
+                    style: const TextStyle(
+                      color: Colors.indigo,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -86,7 +83,7 @@ class MatchCard extends StatelessWidget {
                         alignment: AlignmentDirectional.center,
                         children: [
                           RadarChart(
-                            length: 6,
+                            length: radarLength,
                             radius: 40,
                             initialAngle: 60,
                             backgroundColor: Colors.white,
@@ -96,7 +93,7 @@ class MatchCard extends StatelessWidget {
                             radialColor: Colors.grey.shade200,
                             radars: [
                               RadarTile(
-                                values: values[cardIndex],
+                                values: radarValues,
                                 borderColor: Colors.blue,
                                 backgroundColor:
                                     Color.fromRGBO(255, 255, 255, .3),
@@ -108,7 +105,7 @@ class MatchCard extends StatelessWidget {
                             radius: 14,
                             backgroundColor: Color.fromRGBO(255, 255, 255, .2),
                             child: Text(
-                              texts[cardIndex],
+                              overallScore.toString(),
                               style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.deepOrange,
@@ -156,6 +153,40 @@ class MatchCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  static List<ScoreItem> _normalizeScores(List<ScoreItem> scores, int length) {
+    final normalized = scores.take(length).toList();
+    while (normalized.length < length) {
+      normalized.add(ScoreItem("", 0));
+    }
+    return normalized;
+  }
+
+  static int _calculateOverallScore(List<ScoreItem> scores) {
+    if (scores.isEmpty) {
+      return 0;
+    }
+    final total = scores.fold<int>(0, (sum, item) => sum + item.score);
+    return (total / scores.length).round();
+  }
+
+  static String _companyInitials(String companyName) {
+    final tokens = companyName
+        .trim()
+        .split(RegExp(r"\s+"))
+        .where((token) => token.isNotEmpty)
+        .toList();
+
+    if (tokens.isEmpty) {
+      return "CO";
+    }
+
+    if (tokens.length == 1) {
+      return tokens.first.substring(0, 1).toUpperCase();
+    }
+
+    return "${tokens[0][0]}${tokens[1][0]}".toUpperCase();
   }
 }
 

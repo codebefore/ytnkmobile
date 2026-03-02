@@ -11,7 +11,9 @@ class ScoreItem {
   );
 
   static List<ScoreItem> fromList(List<dynamic> list) {
-    return list.map((e) => ScoreItem.fromMap(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => ScoreItem.fromMap(e as Map<String, dynamic>))
+        .toList();
   }
 
   Map<String, dynamic> toMap() {
@@ -23,8 +25,8 @@ class ScoreItem {
 
   factory ScoreItem.fromMap(Map<String, dynamic> map) {
     return ScoreItem(
-      map['name'] as String,
-      map['score'] as int,
+      (map['name'] ?? "").toString(),
+      (map['score'] as num?)?.round() ?? 0,
     );
   }
 
