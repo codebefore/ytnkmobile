@@ -15,7 +15,7 @@ class Match {
   String departmentName;
   String location;
   String seniorityLevel;
-  DateTime createdAt;
+  DateTime? createdAt;
   String workingMethod;
   String salaryExpectationMin;
   String salaryExpectationMax;
@@ -24,6 +24,7 @@ class Match {
   String typeOfPosition;
   List<ScoreItem> skillFitness;
   List<ScoreItem> scores;
+  double? overallScore;
 
   Match({
     required this.id,
@@ -48,12 +49,13 @@ class Match {
     required this.typeOfPosition,
     required this.skillFitness,
     required this.scores,
+    required this.overallScore,
   });
 
   factory Match.fromMap(Map<String, dynamic> map) {
-    final createdAtRaw = map['createdAt'];
-    final parsedCreatedAt =
-        createdAtRaw is String ? DateTime.tryParse(createdAtRaw) : null;
+    final parsedCreatedAt = _parseDateTime(map['createdAt']) ??
+        _parseDateTime(map['creationDate']) ??
+        _parseDateTime(map['lastCalculated']);
 
     return Match(
       id: map['id'] ?? '',
@@ -69,7 +71,7 @@ class Match {
       departmentName: map['departmentName'] ?? '',
       location: map['location'] ?? '',
       seniorityLevel: map['seniorityLevel'] ?? '',
-      createdAt: parsedCreatedAt ?? DateTime.now(),
+      createdAt: parsedCreatedAt,
       workingMethod: map['workingMethod'] ?? '',
       salaryExpectationMin: map['salaryExpectationMin'] ?? '',
       salaryExpectationMax: map['salaryExpectationMax'] ?? '',
@@ -84,6 +86,7 @@ class Match {
               ?.map((x) => ScoreItem.fromMap(x))
               .toList() ??
           const []),
+      overallScore: _parseDouble(map['overallScore']),
     );
   }
 
@@ -102,7 +105,7 @@ class Match {
       'departmentName': departmentName,
       'location': location,
       'seniorityLevel': seniorityLevel,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': createdAt?.toIso8601String(),
       'workingMethod': workingMethod,
       'salaryExpectationMin': salaryExpectationMin,
       'salaryExpectationMax': salaryExpectationMax,
@@ -111,6 +114,7 @@ class Match {
       'typeOfPosition': typeOfPosition,
       'skillFitness': skillFitness.map((x) => x.toMap()).toList(),
       'scores': scores.map((x) => x.toMap()).toList(),
+      'overallScore': overallScore,
     };
   }
 
@@ -129,5 +133,28 @@ class Match {
 
   String toJson() {
     return json.encode(toMap());
+  }
+
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value == null) {
+      return null;
+    }
+    if (value is String) {
+      return DateTime.tryParse(value);
+    }
+    if (value is num) {
+      return DateTime.fromMillisecondsSinceEpoch(value.round(), isUtc: true);
+    }
+    return null;
+  }
+
+  static double? _parseDouble(dynamic value) {
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is String) {
+      return double.tryParse(value);
+    }
+    return null;
   }
 }

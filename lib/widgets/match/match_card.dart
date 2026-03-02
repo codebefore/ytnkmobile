@@ -24,7 +24,8 @@ class MatchCard extends StatelessWidget {
     final radarValues = normalizedScores
         .map((score) => score.score.clamp(0, 100).toDouble() / 100.0)
         .toList();
-    final overallScore = _calculateOverallScore(match.scores);
+    final overallScore =
+        match.overallScore?.round() ?? _calculateOverallScore(match.scores);
 
     return InkWell(
       onTap: () {
@@ -143,7 +144,7 @@ class MatchCard extends StatelessWidget {
                     icon: GlobalIcons.MATCHINGS_PAGE_proficiencyLevelIcon,
                   ),
                   MatchFeature(
-                    text: match.createdAt.toMoment().fromNow(),
+                    text: _relativeCreatedAt(match.createdAt),
                     icon: GlobalIcons.GENERAL_dateIcon,
                   ),
                 ],
@@ -169,6 +170,13 @@ class MatchCard extends StatelessWidget {
     }
     final total = scores.fold<int>(0, (sum, item) => sum + item.score);
     return (total / scores.length).round();
+  }
+
+  static String _relativeCreatedAt(DateTime? createdAt) {
+    if (createdAt == null) {
+      return "-";
+    }
+    return createdAt.toMoment().fromNow();
   }
 
   static String _companyInitials(String companyName) {

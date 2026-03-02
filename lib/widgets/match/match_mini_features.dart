@@ -38,7 +38,7 @@ class MatchMiniFeatures extends StatelessWidget {
                 flex: 1,
                 child: MatchMiniFeature(
                   icon: GlobalIcons.GENERAL_dateIcon,
-                  title: match.createdAt.toMoment().fromNow(),
+                  title: _relativeCreatedAt(match.createdAt),
                 ),
               ),
             ],
@@ -46,5 +46,12 @@ class MatchMiniFeatures extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  static String _relativeCreatedAt(DateTime? createdAt) {
+    if (createdAt == null) {
+      return "-";
+    }
+    return createdAt.toMoment().fromNow();
   }
 }
