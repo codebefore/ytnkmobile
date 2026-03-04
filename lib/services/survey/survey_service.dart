@@ -115,6 +115,8 @@ class SurveyService extends ServiceBase {
               .toList();
           break;
         case 'teamWorks':
+        case 'teamWork':
+        case 'teamwork':
           response['teamWork'] = question.choices
               .where((c) => c.percent != null && c.percent! > 0)
               .map((c) => {'key': c.key, 'percentage': c.percent!.toInt()})
