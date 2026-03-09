@@ -19,69 +19,111 @@ class MatchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isActionable = match.status == "pre-match";
+
     return DefaultScaffold(
       isOnlyBack: true,
       title: GlobalTexts.current.MATCH_PAGE_title,
       body: BlocConsumer<GlobalBloc, GlobalState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state.lastOperation == Operations.acceptMatch &&
+              state.isSuccessful) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(GlobalTexts.current.MATCH_PAGE_acceptSuccess)),
+            );
+            Navigator.of(context).pop();
+          }
+
+          if (state.lastOperation == Operations.rejectMatch &&
+              state.isSuccessful) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(GlobalTexts.current.MATCH_PAGE_rejectSuccess)),
+            );
+            Navigator.of(context).pop();
+          }
+
+          if ((state.lastOperation == Operations.acceptMatch ||
+                  state.lastOperation == Operations.rejectMatch) &&
+              state.isFailure &&
+              state.infoMessage.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.infoMessage)),
+            );
+          }
+        },
         builder: (context, state) => Column(children: [
-           Expanded(
+          Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(height: 30),
-                  MatchHeader(match: match,),
+                  MatchHeader(match: match),
                   SizedBox(height: 30),
-                  MatchMiniFeatures(match: match,),
+                  MatchMiniFeatures(match: match),
                   SizedBox(height: 30),
-                  MatchFeatures(match: match,),
+                  MatchFeatures(match: match),
                   SizedBox(height: 30),
-                  MatchRadar(match: match,),
+                  MatchRadar(match: match),
                   SizedBox(height: 30),
-                  MatchSkillCloud(match: match,),
+                  MatchSkillCloud(match: match),
                   SizedBox(height: 30),
-                  MatchAccordion(match: match,),
+                  MatchAccordion(match: match),
                   SizedBox(height: 30),
                 ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                        minimumSize:
-                            WidgetStateProperty.all(const Size(100, 30)),
-                        foregroundColor:
-                            const WidgetStatePropertyAll(Colors.white),
-                        backgroundColor:
-                            const WidgetStatePropertyAll(Colors.green),
-                        padding:
-                            const WidgetStatePropertyAll(EdgeInsets.all(8)),
-                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)))),
-                    child: Text(GlobalTexts.current.MATCH_PAGE_accept)),
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                        minimumSize:
-                            WidgetStateProperty.all(const Size(100, 30)),
-                        foregroundColor:
-                            const WidgetStatePropertyAll(Colors.white),
-                        backgroundColor:
-                            const WidgetStatePropertyAll(Colors.deepOrange),
-                        padding:
-                            const WidgetStatePropertyAll(EdgeInsets.all(8)),
-                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)))),
-                    child: Text(GlobalTexts.current.MATCH_PAGE_reject)),
-              ],
+          if (isActionable)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                      onPressed: state.isProcessing
+                          ? null
+                          : () {
+                              context
+                                  .read<GlobalBloc>()
+                                  .add(AcceptMatchEvent(matchId: match.id));
+                            },
+                      style: ButtonStyle(
+                          minimumSize:
+                              WidgetStateProperty.all(const Size(100, 30)),
+                          foregroundColor:
+                              const WidgetStatePropertyAll(Colors.white),
+                          backgroundColor:
+                              const WidgetStatePropertyAll(Colors.green),
+                          padding:
+                              const WidgetStatePropertyAll(EdgeInsets.all(8)),
+                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)))),
+                      child: Text(GlobalTexts.current.MATCH_PAGE_accept)),
+                  ElevatedButton(
+                      onPressed: state.isProcessing
+                          ? null
+                          : () {
+                              context
+                                  .read<GlobalBloc>()
+                                  .add(RejectMatchEvent(matchId: match.id));
+                            },
+                      style: ButtonStyle(
+                          minimumSize:
+                              WidgetStateProperty.all(const Size(100, 30)),
+                          foregroundColor:
+                              const WidgetStatePropertyAll(Colors.white),
+                          backgroundColor:
+                              const WidgetStatePropertyAll(Colors.deepOrange),
+                          padding:
+                              const WidgetStatePropertyAll(EdgeInsets.all(8)),
+                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)))),
+                      child: Text(GlobalTexts.current.MATCH_PAGE_reject)),
+                ],
+              ),
             ),
-          ),
         ]),
       ),
     );

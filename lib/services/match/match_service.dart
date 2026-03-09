@@ -20,4 +20,37 @@ class MatchService extends ServiceBase {
       return ServiceResponse.fail(e);
     }
   }
+
+  Future<ServiceResponse<void>> acceptMatch(String matchId) async {
+    try {
+      final response = await postAPIRequest("match/accept/$matchId", {});
+      if (response.isSuccess) {
+        return ServiceResponse.success();
+      }
+
+      return ServiceResponse.fail(response.message,
+          isUnauthorized: response.isUnauthorized);
+    } catch (e) {
+      return ServiceResponse.fail(e);
+    }
+  }
+
+  Future<ServiceResponse<void>> rejectMatch(String matchId,
+      {bool alsoRefer = false, String email = ""}) async {
+    try {
+      final response = await postAPIRequest("match/reject/$matchId", {
+        "alsoRefer": alsoRefer,
+        "email": email,
+      });
+
+      if (response.isSuccess) {
+        return ServiceResponse.success();
+      }
+
+      return ServiceResponse.fail(response.message,
+          isUnauthorized: response.isUnauthorized);
+    } catch (e) {
+      return ServiceResponse.fail(e);
+    }
+  }
 }

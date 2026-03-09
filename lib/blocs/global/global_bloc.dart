@@ -98,5 +98,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
 
     //matching related events
     on<RetrieveUsersMatchesEvent>(_getUsersMatches);
+    on<AcceptMatchEvent>(_acceptMatch);
+    on<RejectMatchEvent>(_rejectMatch);
   }
 }

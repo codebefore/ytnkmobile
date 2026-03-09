@@ -59,7 +59,7 @@ class Match {
 
     return Match(
       id: map['id'] ?? '',
-      status: map['status'] ?? '',
+      status: _normalizeStatus(map['status']),
       positionId: map['positionId'] ?? '',
       jobTitle: map['jobTitle'] ?? '',
       requirements: map['requirements'] ?? '',
@@ -156,5 +156,13 @@ class Match {
       return double.tryParse(value);
     }
     return null;
+  }
+
+  static String _normalizeStatus(dynamic value) {
+    final status = (value ?? '').toString().toLowerCase();
+    if (status == 'waiting') {
+      return 'pre-match';
+    }
+    return status;
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:wonderpush_flutter/wonderpush_flutter.dart';
 import 'package:ytnkio/blocs/global/global_bloc.dart';
 import 'package:ytnkio/blocs/default_bloc_observer.dart';
 import 'package:ytnkio/blocs/survey/survey_bloc.dart';
@@ -16,6 +17,39 @@ import 'package:ytnkio/widgets/common/connectivity_checker.dart';
 import 'package:ytnkio/widgets/common/processing_indicator.dart';
 
 import 'firebase_options.dart';
+
+class _AppWonderPushDelegate implements WonderPushDelegate {
+  final void Function(Map<String, dynamic> notification) _onReceived;
+  final void Function(Map<String, dynamic> notification, int buttonIndex)
+      _onOpened;
+
+  _AppWonderPushDelegate({
+    required void Function(Map<String, dynamic> notification) onReceived,
+    required void Function(Map<String, dynamic> notification, int buttonIndex)
+        onOpened,
+  })  : _onReceived = onReceived,
+        _onOpened = onOpened;
+
+  @override
+  void onNotificationReceived(Map<String, dynamic> notification) {
+    _onReceived(notification);
+  }
+
+  @override
+  void onNotificationOpened(
+      Map<String, dynamic> notification, int buttonIndex) {
+    _onOpened(notification, buttonIndex);
+  }
+}
+
+void _refreshMatchesIfPossible(GlobalBloc globalBloc) {
+  final profileId = globalBloc.state.profile.id;
+  if (!globalBloc.state.isAuthenticated || profileId.isEmpty) {
+    return;
+  }
+
+  globalBloc.add(RetrieveUsersMatchesEvent(profileId: profileId));
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +68,19 @@ void main() async {
   // OneSignal.Notifications.requestPermission(true);
 
   Bloc.observer = DefaultBlocObserver();
+  final globalBloc = GlobalBloc()
+    ..add(RetrieveDeviceIdEvent())
+    ..add(RetrieveLandingStatusEvent())
+    ..add(RestoreSessionEvent());
+
+  WonderPush.setDelegate(_AppWonderPushDelegate(
+    onReceived: (notification) {
+      _refreshMatchesIfPossible(globalBloc);
+    },
+    onOpened: (notification, buttonIndex) {
+      _refreshMatchesIfPossible(globalBloc);
+    },
+  ));
 
   runApp(
     MultiProvider(
@@ -44,7 +91,7 @@ void main() async {
           ),
         ),
       ],
-      child: const YtnkioApp(),
+      child: YtnkioApp(globalBloc: globalBloc),
     ),
   );
 
@@ -57,17 +104,16 @@ void configLoading() {
 }
 
 class YtnkioApp extends StatelessWidget {
-  const YtnkioApp({super.key});
+  final GlobalBloc globalBloc;
+
+  const YtnkioApp({required this.globalBloc, super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => GlobalBloc()
-            ..add(RetrieveDeviceIdEvent())
-            ..add(RetrieveLandingStatusEvent())
-            ..add(RestoreSessionEvent()),
+        BlocProvider.value(
+          value: globalBloc,
         ),
         BlocProvider(
           create: (context) => SurveyBloc(),

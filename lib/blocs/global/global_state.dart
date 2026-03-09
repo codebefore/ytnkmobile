@@ -356,7 +356,9 @@ enum Operations {
   deleteEducation(value: "deleteEducation"),
   deleteCertificate(value: "deleteCertificate"),
   deleteSkill(value: "deleteSkill"),
-  addSkills(value: "addSkills");
+  addSkills(value: "addSkills"),
+  acceptMatch(value: "acceptMatch"),
+  rejectMatch(value: "rejectMatch");
 
   const Operations({required this.value});
 

@@ -374,7 +374,8 @@ class TextFileGB extends TextFile {
       "Add your personal information to enrich your profile";
 
   @override
-  String VIEWPROFILE_PAGE_profileSavedSuccessfully = "Profile saved succesfully";
+  String VIEWPROFILE_PAGE_profileSavedSuccessfully =
+      "Profile saved succesfully";
   @override
   String VIEWPROFILE_PAGE_profileFetchedSuccessfullyFromResume =
       "Profile fetched successfully from resume";
@@ -658,6 +659,18 @@ class TextFileGB extends TextFile {
       "    You can view your matching details with tapping on them.";
   @override
   String MATCHINGS_PAGE_filterBy = "Filter by";
+  @override
+  String MATCHINGS_PAGE_filterAll = "All";
+  @override
+  String MATCHINGS_PAGE_filterPreMatch = "Pre-Match";
+  @override
+  String MATCHINGS_PAGE_filterAccepted = "Accepted";
+  @override
+  String MATCHINGS_PAGE_filterRejected = "Rejected";
+  @override
+  String MATCHINGS_PAGE_filterReferred = "Referred";
+  @override
+  String MATCHINGS_PAGE_filterWaiting = "Waiting";
 
   @override
   String MATCH_PAGE_title = "Match";
@@ -665,6 +678,10 @@ class TextFileGB extends TextFile {
   String MATCH_PAGE_accept = "Accept";
   @override
   String MATCH_PAGE_reject = "Reject & Refer";
+  @override
+  String MATCH_PAGE_acceptSuccess = "Interview request accepted.";
+  @override
+  String MATCH_PAGE_rejectSuccess = "Interview request rejected.";
   @override
   String MATCH_PAGE_feature_1_title = "Work Type";
   @override
@@ -683,6 +700,16 @@ class TextFileGB extends TextFile {
   String MATCH_PAGE_accordion_title_2 = "Requirements";
   @override
   String MATCH_PAGE_accordion_title_3 = "About Us";
+  @override
+  String MATCH_PAGE_statusAccepted = "Accepted";
+  @override
+  String MATCH_PAGE_statusRejected = "Rejected";
+  @override
+  String MATCH_PAGE_statusReferred = "Referred";
+  @override
+  String MATCH_PAGE_statusInterviewRequest = "Interview Request";
+  @override
+  String MATCH_PAGE_statusMatched = "Matched";
 
   @override
   String SETTINGS_PAGE_title = "Settings";
@@ -871,8 +898,8 @@ class TextFileGB extends TextFile {
   @override
   String COMPLETE_SURVEY_PAGE_title = "Complete Survey";
   @override
-  String COMPLETE_SURVEY_PAGE_completeSurvey =
-      "Complete Survey";
+  String COMPLETE_SURVEY_PAGE_completeSurvey = "Complete Survey";
   @override
-  String COMPLETE_SURVEY_PAGE_description = "Thank you for completing the survey. Your responses will help us to understand your expectations from your ideal work environment.";
+  String COMPLETE_SURVEY_PAGE_description =
+      "Thank you for completing the survey. Your responses will help us to understand your expectations from your ideal work environment.";
 }

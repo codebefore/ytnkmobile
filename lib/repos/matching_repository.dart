@@ -9,4 +9,13 @@ class MatchRepository {
       String profileId, String language) async {
     return service.getProfileMatches(profileId, language);
   }
+
+  Future<ServiceResponse<void>> acceptMatch(String matchId) async {
+    return service.acceptMatch(matchId);
+  }
+
+  Future<ServiceResponse<void>> rejectMatch(String matchId,
+      {bool alsoRefer = false, String email = ""}) async {
+    return service.rejectMatch(matchId, alsoRefer: alsoRefer, email: email);
+  }
 }

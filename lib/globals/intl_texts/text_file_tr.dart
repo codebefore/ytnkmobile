@@ -659,6 +659,18 @@ class TextFileTR extends TextFile {
       "    Eşleşmelerin üzerine tıklayarak ayrıntılarını görebilirsiniz.";
   @override
   String MATCHINGS_PAGE_filterBy = "Filtrele";
+  @override
+  String MATCHINGS_PAGE_filterAll = "Tümü";
+  @override
+  String MATCHINGS_PAGE_filterPreMatch = "Ön Eşleşme";
+  @override
+  String MATCHINGS_PAGE_filterAccepted = "Kabul Edildi";
+  @override
+  String MATCHINGS_PAGE_filterRejected = "Reddedildi";
+  @override
+  String MATCHINGS_PAGE_filterReferred = "Önerildi";
+  @override
+  String MATCHINGS_PAGE_filterWaiting = "Beklemede";
 
   @override
   String MATCH_PAGE_title = "Eşleşme";
@@ -666,6 +678,10 @@ class TextFileTR extends TextFile {
   String MATCH_PAGE_accept = "Kabul Et";
   @override
   String MATCH_PAGE_reject = "Reddet & Öner";
+  @override
+  String MATCH_PAGE_acceptSuccess = "Mülakat talebi kabul edildi.";
+  @override
+  String MATCH_PAGE_rejectSuccess = "Mülakat talebi reddedildi.";
   @override
   String MATCH_PAGE_feature_1_title = "Çalışma Türü";
   @override
@@ -684,6 +700,16 @@ class TextFileTR extends TextFile {
   String MATCH_PAGE_accordion_title_2 = "Gereklilikler";
   @override
   String MATCH_PAGE_accordion_title_3 = "Hakkımızda";
+  @override
+  String MATCH_PAGE_statusAccepted = "Kabul Edildi";
+  @override
+  String MATCH_PAGE_statusRejected = "Reddedildi";
+  @override
+  String MATCH_PAGE_statusReferred = "Önerildi";
+  @override
+  String MATCH_PAGE_statusInterviewRequest = "Mülakat Talebi";
+  @override
+  String MATCH_PAGE_statusMatched = "Eşleşti";
 
   @override
   String SETTINGS_PAGE_title = "Ayarlar";
@@ -877,8 +903,8 @@ class TextFileTR extends TextFile {
   @override
   String COMPLETE_SURVEY_PAGE_title = "Anket Tamamlandı";
   @override
-  String COMPLETE_SURVEY_PAGE_completeSurvey =
-      "Anketi Tamamla";
+  String COMPLETE_SURVEY_PAGE_completeSurvey = "Anketi Tamamla";
   @override
-  String COMPLETE_SURVEY_PAGE_description = "Anketi tamamladığınız için teşekkür ederiz! \n\nSonuçlarınız, iş ortamı tercihlerinizi ve beklentilerinizi anlamamıza yardımcı olacak.";
+  String COMPLETE_SURVEY_PAGE_description =
+      "Anketi tamamladığınız için teşekkür ederiz! \n\nSonuçlarınız, iş ortamı tercihlerinizi ve beklentilerinizi anlamamıza yardımcı olacak.";
 }

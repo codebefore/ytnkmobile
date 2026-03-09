@@ -15,13 +15,15 @@ class MatchesPage extends StatefulWidget {
 }
 
 class _MatchesPageState extends State<MatchesPage> {
-  String filter = "all";
   List<Match> matches = [];
 
   @override
   Widget build(BuildContext context) {
     final allMatches = context.watch<GlobalBloc>().state.matches;
-    matches = allMatches.where(_matchesFilter).toList();
+    matches = allMatches.where((match) {
+      final status = match.status.toLowerCase();
+      return status == "pre-match" || status == "accepted";
+    }).toList();
 
     return DefaultScaffold(
       title: GlobalTexts.current.MATCHINGS_PAGE_title,
@@ -30,7 +32,7 @@ class _MatchesPageState extends State<MatchesPage> {
         builder: (context, state) => ListView(
           children: [
             Text(
-                "${GlobalTexts.current.MATCHINGS_PAGE_matchingSummaryA}${state.matches.length}${GlobalTexts.current.MATCHINGS_PAGE_matchingSummaryB}",
+                "${GlobalTexts.current.MATCHINGS_PAGE_matchingSummaryA}${matches.length}${GlobalTexts.current.MATCHINGS_PAGE_matchingSummaryB}",
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             Text(GlobalTexts.current.MATCHINGS_PAGE_matchingSummaryHint,
@@ -39,66 +41,10 @@ class _MatchesPageState extends State<MatchesPage> {
                     fontSize: 12,
                     fontWeight: FontWeight.normal)),
             const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(GlobalTexts.current.MATCHINGS_PAGE_filterBy,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal)),
-                DropdownMenu<String>(
-                    leadingIcon: null,
-                    onSelected: (value) {
-                      setState(() {
-                        filter = value ?? "all";
-                      });
-                    },
-                    inputDecorationTheme: const InputDecorationTheme(
-                        contentPadding: EdgeInsets.all(4),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        isDense: true),
-                    initialSelection: "all",
-                    textStyle: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                    menuStyle: MenuStyle(
-                        visualDensity: VisualDensity.compact,
-                        backgroundColor:
-                            const WidgetStatePropertyAll(Colors.white),
-                        elevation: const WidgetStatePropertyAll(8),
-                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)))),
-                    dropdownMenuEntries: const [
-                      DropdownMenuEntry(value: "all", label: "All"),
-                      DropdownMenuEntry(value: "accepted", label: "Accepted"),
-                      DropdownMenuEntry(value: "rejected", label: "Rejected"),
-                      DropdownMenuEntry(value: "referred", label: "Referred"),
-                      DropdownMenuEntry(value: "waiting", label: "Waiting"),
-                    ])
-              ],
-            ),
-            const SizedBox(height: 16),
             ...matches.map((item) => MatchCard(match: item)),
           ],
         ),
       ),
     );
-  }
-
-  bool _matchesFilter(Match match) {
-    if (filter == "all") {
-      return true;
-    }
-
-    // Legacy data may use "pending" while UI filter uses "waiting".
-    if (filter == "waiting") {
-      return match.status == "waiting" || match.status == "pending";
-    }
-
-    return match.status == filter;
   }
 }

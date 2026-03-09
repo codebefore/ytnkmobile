@@ -21,16 +21,67 @@ class TextFileES extends TextFile {
 
   @override
   var YEARSBEFORE = [
-    "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009",
-    "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019",
-    "2020", "2021", "2022", "2023", "2024", "2025"
+    "2000",
+    "2001",
+    "2002",
+    "2003",
+    "2004",
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025"
   ];
 
   @override
   var YEARSBEFOREAFTER = [
-    "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009",
-    "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019",
-    "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030"
+    "2000",
+    "2001",
+    "2002",
+    "2003",
+    "2004",
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026",
+    "2027",
+    "2028",
+    "2029",
+    "2030"
   ];
 
   @override
@@ -84,7 +135,8 @@ class TextFileES extends TextFile {
   String LANDING_PAGE_landing1Description =
       "Crea tu perfil para que te conozcamos mejor";
   @override
-  String LANDING_PAGE_landing2Title = "Completa la encuesta de ambiente laboral";
+  String LANDING_PAGE_landing2Title =
+      "Completa la encuesta de ambiente laboral";
   @override
   String LANDING_PAGE_landing2Description =
       "Completa la encuesta para descubrir el mejor ambiente laboral para ti";
@@ -114,7 +166,8 @@ class TextFileES extends TextFile {
   @override
   String LOGIN_PAGE_login = "Iniciar sesión";
   @override
-  String LOGIN_PAGE_retreivingProfileInfo = "Recuperando información del perfil...";
+  String LOGIN_PAGE_retreivingProfileInfo =
+      "Recuperando información del perfil...";
   @override
   String LOGIN_PAGE_forgotPassword = "¿Olvidaste tu contraseña?";
   @override
@@ -126,11 +179,13 @@ class TextFileES extends TextFile {
   @override
   String LOGIN_PAGE_createAccount = "Crear cuenta";
   @override
-  String LOGIN_PAGE_unsuccessfulLoginAttempt = "Intento de inicio de sesión fallido";
+  String LOGIN_PAGE_unsuccessfulLoginAttempt =
+      "Intento de inicio de sesión fallido";
   @override
   String LOGIN_PAGE_noProfile = "Sin perfil";
   @override
-  String LOGIN_PAGE_returnToLoginPage = "Volver a la página de inicio de sesión";
+  String LOGIN_PAGE_returnToLoginPage =
+      "Volver a la página de inicio de sesión";
   @override
   String LOGIN_PAGE_loginSuccessful = "Inicio de sesión exitoso";
 
@@ -175,12 +230,14 @@ class TextFileES extends TextFile {
   @override
   String SIGNUP_PAGE_invalidReferenceCode = "Código de referencia inválido";
   @override
-  String SIGNUP_PAGE_fullNameMustBeFilled = "El campo nombre completo es obligatorio";
+  String SIGNUP_PAGE_fullNameMustBeFilled =
+      "El campo nombre completo es obligatorio";
   @override
   String SIGNUP_PAGE_fullNameMustContainFirstAndLast =
       "El nombre completo debe contener nombre y apellido";
   @override
-  String SIGNUP_PAGE_emailMustBeFilled = "El campo correo electrónico es obligatorio";
+  String SIGNUP_PAGE_emailMustBeFilled =
+      "El campo correo electrónico es obligatorio";
   @override
   String SIGNUP_PAGE_emailIsNotValid = "El correo electrónico no es válido";
   @override
@@ -191,7 +248,8 @@ class TextFileES extends TextFile {
   @override
   String SIGNUP_PAGE_locationIsNotValid = "La ubicación no es válida";
   @override
-  String SIGNUP_PAGE_passwordMustBeFilled = "El campo contraseña es obligatorio";
+  String SIGNUP_PAGE_passwordMustBeFilled =
+      "El campo contraseña es obligatorio";
   @override
   String SIGNUP_PAGE_passwordIsNotValid =
       "La contraseña debe tener al menos 6 caracteres";
@@ -238,7 +296,8 @@ class TextFileES extends TextFile {
   String FORGOT_PASSWORD_PAGE_emailHint =
       "Se enviará un correo con un enlace para restablecer la contraseña.";
   @override
-  String FORGOT_PASSWORD_PAGE_resetPassword = "Enviar enlace de restablecimiento";
+  String FORGOT_PASSWORD_PAGE_resetPassword =
+      "Enviar enlace de restablecimiento";
   @override
   String FORGOT_PASSWORD_PAGE_emailIsNotValid = "Tu correo no es válido";
   @override
@@ -251,7 +310,8 @@ class TextFileES extends TextFile {
   String EMAIL_VERIFICATION_PAGE_emailVerificationSuccess =
       "Verificación de correo exitosa";
   @override
-  String EMAIL_VERIFICATION_PAGE_verificationCodeLabel = "Código de verificación";
+  String EMAIL_VERIFICATION_PAGE_verificationCodeLabel =
+      "Código de verificación";
   @override
   String EMAIL_VERIFICATION_PAGE_verificationCodeHelper =
       "Introduce el código enviado a tu correo";
@@ -323,12 +383,14 @@ class TextFileES extends TextFile {
       "Agrega tu información personal para enriquecer tu perfil";
 
   @override
-  String VIEWPROFILE_PAGE_profileSavedSuccessfully = "Perfil guardado exitosamente";
+  String VIEWPROFILE_PAGE_profileSavedSuccessfully =
+      "Perfil guardado exitosamente";
   @override
   String VIEWPROFILE_PAGE_profileFetchedSuccessfullyFromResume =
       "Perfil obtenido exitosamente desde el currículum";
   @override
-  String VIEWPROFILE_PAGE_avatarSavedSuccessfully = "Avatar guardado exitosamente";
+  String VIEWPROFILE_PAGE_avatarSavedSuccessfully =
+      "Avatar guardado exitosamente";
 
   @override
   String PROFILE_FLOATINGBUTTON_WORKEXPERIENCE = "Experiencia laboral";
@@ -448,7 +510,8 @@ class TextFileES extends TextFile {
   String EDITWORKEXPERIENCE_PAGE_saveSuccess =
       "Experiencia laboral guardada exitosamente";
   @override
-  String EDITWORKEXPERIENCE_PAGE_saveError = "Error al guardar experiencia laboral";
+  String EDITWORKEXPERIENCE_PAGE_saveError =
+      "Error al guardar experiencia laboral";
   @override
   String EDITWORKEXPERIENCE_PAGE_title = "Editar experiencia laboral";
   @override
@@ -537,7 +600,8 @@ class TextFileES extends TextFile {
   @override
   String EDITCERTIFICATE_PAGE_saveError = "Error al editar certificado";
   @override
-  String EDITCERTIFICATE_PAGE_deleteSuccess = "Certificado eliminado exitosamente";
+  String EDITCERTIFICATE_PAGE_deleteSuccess =
+      "Certificado eliminado exitosamente";
   @override
   String EDITCERTIFICATE_PAGE_deleteError = "Error al eliminar certificado";
   @override
@@ -607,6 +671,18 @@ class TextFileES extends TextFile {
       "    Puedes ver los detalles de tus coincidencias tocando sobre ellas.";
   @override
   String MATCHINGS_PAGE_filterBy = "Filtrar por";
+  @override
+  String MATCHINGS_PAGE_filterAll = "Todos";
+  @override
+  String MATCHINGS_PAGE_filterPreMatch = "Pre-Match";
+  @override
+  String MATCHINGS_PAGE_filterAccepted = "Aceptado";
+  @override
+  String MATCHINGS_PAGE_filterRejected = "Rechazado";
+  @override
+  String MATCHINGS_PAGE_filterReferred = "Referido";
+  @override
+  String MATCHINGS_PAGE_filterWaiting = "En espera";
 
   @override
   String MATCH_PAGE_title = "Coincidencia";
@@ -614,6 +690,10 @@ class TextFileES extends TextFile {
   String MATCH_PAGE_accept = "Aceptar";
   @override
   String MATCH_PAGE_reject = "Rechazar y referir";
+  @override
+  String MATCH_PAGE_acceptSuccess = "Solicitud de entrevista aceptada.";
+  @override
+  String MATCH_PAGE_rejectSuccess = "Solicitud de entrevista rechazada.";
   @override
   String MATCH_PAGE_feature_1_title = "Tipo de Trabajo";
   @override
@@ -632,6 +712,16 @@ class TextFileES extends TextFile {
   String MATCH_PAGE_accordion_title_2 = "Requisitos";
   @override
   String MATCH_PAGE_accordion_title_3 = "Acerca de nosotros";
+  @override
+  String MATCH_PAGE_statusAccepted = "Aceptado";
+  @override
+  String MATCH_PAGE_statusRejected = "Rechazado";
+  @override
+  String MATCH_PAGE_statusReferred = "Referido";
+  @override
+  String MATCH_PAGE_statusInterviewRequest = "Solicitud de entrevista";
+  @override
+  String MATCH_PAGE_statusMatched = "Coincidencia";
 
   @override
   String SETTINGS_PAGE_title = "Configuración";
@@ -755,7 +845,7 @@ class TextFileES extends TextFile {
     "hybrid": "Híbrido",
   };
 
-    @override
+  @override
   String TAKE_SURVE_PAGE_title = "Encuesta de ambiente laboral";
 
   @override
@@ -800,7 +890,13 @@ class TextFileES extends TextFile {
   String PROGRESSVIEWER_profileScore = "Puntaje de perfil";
 
   @override
-  var PROGRESSVIEWER_levelNames = ["Ninguno", "Bajo", "Medio", "Alto", "Perfecto"];
+  var PROGRESSVIEWER_levelNames = [
+    "Ninguno",
+    "Bajo",
+    "Medio",
+    "Alto",
+    "Perfecto"
+  ];
 
   @override
   String BOTTOM_NAVIGATION_BAR_profile = "Perfil";
@@ -820,9 +916,8 @@ class TextFileES extends TextFile {
   @override
   String COMPLETE_SURVEY_PAGE_title = "Completar encuesta";
   @override
-  String COMPLETE_SURVEY_PAGE_completeSurvey =
-      "Completar encuesta";
+  String COMPLETE_SURVEY_PAGE_completeSurvey = "Completar encuesta";
   @override
-  String COMPLETE_SURVEY_PAGE_description  = 
+  String COMPLETE_SURVEY_PAGE_description =
       "Completa la encuesta para ayudarnos a entender tus expectativas de tu ambiente laboral ideal.";
 }

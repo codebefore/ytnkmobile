@@ -281,10 +281,18 @@ abstract class TextFile {
   String get MATCHINGS_PAGE_matchingSummaryB;
   String get MATCHINGS_PAGE_matchingSummaryHint;
   String get MATCHINGS_PAGE_filterBy;
+  String get MATCHINGS_PAGE_filterAll;
+  String get MATCHINGS_PAGE_filterPreMatch;
+  String get MATCHINGS_PAGE_filterAccepted;
+  String get MATCHINGS_PAGE_filterRejected;
+  String get MATCHINGS_PAGE_filterReferred;
+  String get MATCHINGS_PAGE_filterWaiting;
 
   String get MATCH_PAGE_title;
   String get MATCH_PAGE_accept;
   String get MATCH_PAGE_reject;
+  String get MATCH_PAGE_acceptSuccess;
+  String get MATCH_PAGE_rejectSuccess;
   String get MATCH_PAGE_feature_1_title;
   String get MATCH_PAGE_feature_2_title;
   String get MATCH_PAGE_feature_3_title;
@@ -294,6 +302,11 @@ abstract class TextFile {
   String get MATCH_PAGE_accordion_title_1;
   String get MATCH_PAGE_accordion_title_2;
   String get MATCH_PAGE_accordion_title_3;
+  String get MATCH_PAGE_statusAccepted;
+  String get MATCH_PAGE_statusRejected;
+  String get MATCH_PAGE_statusReferred;
+  String get MATCH_PAGE_statusInterviewRequest;
+  String get MATCH_PAGE_statusMatched;
 
   String get SETTINGS_PAGE_title;
   String get SETTINGS_PAGE_language;
@@ -368,7 +381,6 @@ abstract class TextFile {
   String get START_SURVEY_PAGE_title;
   String get START_SURVEY_PAGE_startSurvey;
   String get START_SURVEY_PAGE_description;
-
 
   String get COMPLETE_SURVEY_PAGE_title;
   String get COMPLETE_SURVEY_PAGE_completeSurvey;

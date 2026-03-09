@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moment_dart/moment_dart.dart';
 import 'package:radar_chart/radar_chart.dart';
 import 'package:ytnkio/globals/global_icons.dart';
+import 'package:ytnkio/globals/global_texts.dart';
 import 'package:ytnkio/models/match/match.dart';
 import 'package:ytnkio/models/match/score_item.dart';
 import 'package:ytnkio/pages/match/match_page.dart';
@@ -205,28 +206,47 @@ class MatchStateTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final normalizedStatus = match.status.toLowerCase();
+    final isPreMatch = normalizedStatus == "pre-match" ||
+        normalizedStatus == "waiting" ||
+        normalizedStatus == "pending";
+
+    final backgroundColor = normalizedStatus == "accepted"
+        ? Colors.green[100]
+        : normalizedStatus == "rejected"
+            ? Colors.red[100]
+            : isPreMatch
+                ? Colors.orange[100]
+                : Colors.grey[100];
+
+    final foregroundColor = normalizedStatus == "accepted"
+        ? Colors.green[400]
+        : normalizedStatus == "rejected"
+            ? Colors.red[400]
+            : isPreMatch
+                ? Colors.orange[700]
+                : Colors.grey[400];
+
+    final label = normalizedStatus == "accepted"
+        ? GlobalTexts.current.MATCH_PAGE_statusAccepted
+        : normalizedStatus == "rejected"
+            ? GlobalTexts.current.MATCH_PAGE_statusRejected
+            : normalizedStatus == "referred"
+                ? GlobalTexts.current.MATCH_PAGE_statusReferred
+                : isPreMatch
+                    ? GlobalTexts.current.MATCH_PAGE_statusInterviewRequest
+                    : GlobalTexts.current.MATCH_PAGE_statusMatched;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: match.status == "accepted"
-            ? Colors.green[100]
-            : match.status == "rejected"
-                ? Colors.red[100]
-                : Colors.grey[100],
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Text(
-        match.status == "accepted"
-            ? "Accepted"
-            : match.status == "rejected"
-                ? "Rejected"
-                : "Waiting",
+        label,
         style: TextStyle(
-          color: match.status == "accepted"
-              ? Colors.green[400]
-              : match.status == "rejected"
-                  ? Colors.red[400]
-                  : Colors.grey[400],
+          color: foregroundColor,
           fontWeight: FontWeight.bold,
           fontSize: 14,
         ),
