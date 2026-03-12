@@ -151,7 +151,7 @@ class AuthService extends ServiceBase {
   Future<ServiceResponse<AuthUserInfo>> loginWithGoogleOnly() async {
     try {
       //Logout first to prevent direct login with existing Google account if user is already logged in
-      logout();
+      await logout();
 
       final GoogleSignIn googleSignIn = GoogleSignIn();
 

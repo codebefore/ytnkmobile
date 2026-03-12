@@ -25,9 +25,8 @@ class DefaultAppDrawer extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              state.user == null
-                  ? const SizedBox()
-                  : Padding(
+              state.isAuthenticated
+                  ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
@@ -59,14 +58,21 @@ class DefaultAppDrawer extends StatelessWidget {
                             label: Text(GlobalTexts.current.DRAWER_logout),
                             icon: const Icon(Icons.logout),
                             onPressed: () {
-                              context.read<GlobalBloc>().add(LogoutEvent());
+                              final globalBloc = context.read<GlobalBloc>();
+                              final router = GoRouter.of(context);
 
-                              context.go(LoginPage.id);
+                              Navigator.of(context).pop();
+                              globalBloc.add(LogoutEvent());
+
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                router.go(LoginPage.id);
+                              });
                             },
                           ),
                         ],
                       ),
-                    ),
+                    )
+                  : const SizedBox(),
               state.isLandingCompleted
                   ? TextButton(
                       child: Text(GlobalTexts.current.DRAWER_uncompleteLanding),
