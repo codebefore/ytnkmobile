@@ -11,6 +11,7 @@ class Match {
   String aboutUs;
   String companyId;
   String companyName;
+  String companyLogo;
   String departmentId;
   String departmentName;
   String location;
@@ -36,6 +37,7 @@ class Match {
     required this.aboutUs,
     required this.companyId,
     required this.companyName,
+    required this.companyLogo,
     required this.departmentId,
     required this.departmentName,
     required this.location,
@@ -67,6 +69,7 @@ class Match {
       aboutUs: map['aboutUs'] ?? '',
       companyId: map['companyId'] ?? '',
       companyName: map['companyName'] ?? '',
+      companyLogo: map['companyLogo'] ?? '',
       departmentId: map['departmentId'] ?? '',
       departmentName: map['departmentName'] ?? '',
       location: map['location'] ?? '',
@@ -101,6 +104,7 @@ class Match {
       'aboutUs': aboutUs,
       'companyId': companyId,
       'companyName': companyName,
+      'companyLogo': companyLogo,
       'departmentId': departmentId,
       'departmentName': departmentName,
       'location': location,
@@ -162,6 +166,9 @@ class Match {
     final status = (value ?? '').toString().toLowerCase();
     if (status == 'waiting') {
       return 'pre-match';
+    }
+    if (status == 'pending') {
+      return 'created';
     }
     return status;
   }

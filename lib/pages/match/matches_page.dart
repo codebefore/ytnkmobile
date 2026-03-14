@@ -22,7 +22,7 @@ class _MatchesPageState extends State<MatchesPage> {
     final allMatches = context.watch<GlobalBloc>().state.matches;
     matches = allMatches.where((match) {
       final status = match.status.toLowerCase();
-      return status == "pre-match" || status == "accepted";
+      return status != "created";
     }).toList();
 
     return DefaultScaffold(

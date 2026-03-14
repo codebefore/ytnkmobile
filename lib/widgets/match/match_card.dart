@@ -7,6 +7,7 @@ import 'package:ytnkio/globals/global_texts.dart';
 import 'package:ytnkio/models/match/match.dart';
 import 'package:ytnkio/models/match/score_item.dart';
 import 'package:ytnkio/pages/match/match_page.dart';
+import 'package:ytnkio/widgets/common/company_logo_avatar.dart';
 import 'package:ytnkio/widgets/match/match_feature.dart';
 import 'package:ytnkio/widgets/match/match_tag.dart';
 
@@ -47,16 +48,10 @@ class MatchCard extends StatelessWidget {
               MatchStateTag(match: match),
               const SizedBox(height: 8),
               Row(children: [
-                CircleAvatar(
+                CompanyLogoAvatar(
+                  companyName: match.companyName,
+                  companyLogo: match.companyLogo,
                   radius: 24,
-                  backgroundColor: Colors.indigo.shade50,
-                  child: Text(
-                    _companyInitials(match.companyName),
-                    style: const TextStyle(
-                      color: Colors.indigo,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -179,24 +174,6 @@ class MatchCard extends StatelessWidget {
     }
     return createdAt.toMoment().fromNow();
   }
-
-  static String _companyInitials(String companyName) {
-    final tokens = companyName
-        .trim()
-        .split(RegExp(r"\s+"))
-        .where((token) => token.isNotEmpty)
-        .toList();
-
-    if (tokens.isEmpty) {
-      return "CO";
-    }
-
-    if (tokens.length == 1) {
-      return tokens.first.substring(0, 1).toUpperCase();
-    }
-
-    return "${tokens[0][0]}${tokens[1][0]}".toUpperCase();
-  }
 }
 
 class MatchStateTag extends StatelessWidget {
@@ -207,9 +184,7 @@ class MatchStateTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final normalizedStatus = match.status.toLowerCase();
-    final isPreMatch = normalizedStatus == "pre-match" ||
-        normalizedStatus == "waiting" ||
-        normalizedStatus == "pending";
+    final isPreMatch = normalizedStatus == "pre-match";
 
     final backgroundColor = normalizedStatus == "accepted"
         ? Colors.green[100]

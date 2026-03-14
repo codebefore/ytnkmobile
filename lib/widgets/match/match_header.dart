@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ytnkio/models/match/match.dart';
+import 'package:ytnkio/widgets/common/company_logo_avatar.dart';
 
 class MatchHeader extends StatelessWidget {
   const MatchHeader({required this.match, super.key});
@@ -13,17 +14,11 @@ class MatchHeader extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(20.0),
-          child: CircleAvatar(
+          child: CompanyLogoAvatar(
+            companyName: match.companyName,
+            companyLogo: match.companyLogo,
             radius: 42,
-            backgroundColor: Colors.indigo.shade50,
-            child: Text(
-              _companyInitials(match.companyName),
-              style: const TextStyle(
-                color: Colors.indigo,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            fontSize: 22,
           ),
         ),
         Text(
@@ -44,23 +39,5 @@ class MatchHeader extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  static String _companyInitials(String companyName) {
-    final tokens = companyName
-        .trim()
-        .split(RegExp(r"\s+"))
-        .where((token) => token.isNotEmpty)
-        .toList();
-
-    if (tokens.isEmpty) {
-      return "CO";
-    }
-
-    if (tokens.length == 1) {
-      return tokens.first.substring(0, 1).toUpperCase();
-    }
-
-    return "${tokens[0][0]}${tokens[1][0]}".toUpperCase();
   }
 }
