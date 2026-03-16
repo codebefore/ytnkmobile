@@ -19,6 +19,36 @@ class ChipSelectionSheetState extends State<ChipSelectionSheet> {
   List<Item> selectedChips = [];
   bool _isLoading = false;
 
+  String _normalizeKey(String value) {
+    return value.trim().toLowerCase();
+  }
+
+  bool _isChipSelected(Item chip) {
+    final normalizedKey = _normalizeKey(chip.key);
+
+    return selectedChips.any(
+      (selectedChip) => _normalizeKey(selectedChip.key) == normalizedKey,
+    );
+  }
+
+  List<Item> _dedupeItems(List<Item> items) {
+    final seen = <String>{};
+    final uniqueItems = <Item>[];
+
+    for (final item in items) {
+      final normalizedKey = _normalizeKey(item.key);
+
+      if (normalizedKey.isEmpty || seen.contains(normalizedKey)) {
+        continue;
+      }
+
+      seen.add(normalizedKey);
+      uniqueItems.add(item);
+    }
+
+    return uniqueItems;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +74,7 @@ class ChipSelectionSheetState extends State<ChipSelectionSheet> {
     });
     final chips = await widget.fetchChips(filter);
     setState(() {
-      _chips = chips;
+      _chips = _dedupeItems(chips);
       _isLoading = false;
     });
   }
@@ -52,8 +82,13 @@ class ChipSelectionSheetState extends State<ChipSelectionSheet> {
   void _onChipSelected(Item chip) {
     if (mounted) {
       setState(() {
-        if (selectedChips.contains(chip)) {
-          selectedChips.remove(chip);
+        final selectedChipIndex = selectedChips.indexWhere(
+          (selectedChip) =>
+              _normalizeKey(selectedChip.key) == _normalizeKey(chip.key),
+        );
+
+        if (selectedChipIndex >= 0) {
+          selectedChips.removeAt(selectedChipIndex);
         } else if (selectedChips.length < widget.maxSelectionCount) {
           selectedChips.add(chip);
         }
@@ -91,7 +126,7 @@ class ChipSelectionSheetState extends State<ChipSelectionSheet> {
               : Wrap(
                   spacing: 8.0,
                   children: _chips.map((chip) {
-                    final isSelected = selectedChips.contains(chip);
+                    final isSelected = _isChipSelected(chip);
                     return ChoiceChip(
                       label: Text(chip.text),
                       selected: isSelected,

@@ -6,12 +6,16 @@ extension ProfileMethods on GlobalBloc {
     var response = await _profileRepository.getProfile(event.profileId);
 
     if (response.isSuccess) {
+      final profile = response.responseObject == null
+          ? Profile.initial()
+          : _sanitizeProfileSkills(response.responseObject!);
+
       emit(
         state.copyWith(
           profileStatus: response.responseObject == null
               ? ProfileStatus.noProfile
               : ProfileStatus.hasProfile,
-          profile: response.responseObject!,
+          profile: profile,
         ),
       );
     } else {
@@ -27,14 +31,16 @@ extension ProfileMethods on GlobalBloc {
     var response = await _profileRepository.getProfileFromEmail(event.email);
 
     if (response.isSuccess) {
+      final profile = response.responseObject == null
+          ? Profile.initial()
+          : _sanitizeProfileSkills(response.responseObject!);
+
       emit(
         state.success(
           profileStatus: response.responseObject == null
               ? ProfileStatus.noProfile
               : ProfileStatus.hasProfile,
-          profile: response.responseObject == null
-              ? Profile.initial()
-              : response.responseObject!,
+          profile: profile,
         ),
       );
     } else {
@@ -60,7 +66,9 @@ extension ProfileMethods on GlobalBloc {
       state.success(
         profileStatus: state.profileStatus,
         isProfileDirty: true,
-        profile: state.profile.fillFromLinkedinPdfResume(event.resume),
+        profile: _sanitizeProfileSkills(
+          state.profile.fillFromLinkedinPdfResume(event.resume),
+        ),
       ),
     );
   }
@@ -348,7 +356,7 @@ extension ProfileMethods on GlobalBloc {
   FutureOr<void> _addSkills(AddSkillsEvent event, Emitter<GlobalState> emit) {
     emit(state.processing(lastOperation: Operations.addSkills));
 
-    var addedSkills = event.skills
+    final addedSkills = event.skills
         .map((e) => Skill(
               id: IDGenerator.generateObjectId(),
               name: e.key,
@@ -357,8 +365,8 @@ extension ProfileMethods on GlobalBloc {
             ))
         .toList();
 
-    var updatedProfile = state.profile.copyWith(
-      skills: [...state.profile.skills, ...addedSkills],
+    final updatedProfile = state.profile.copyWith(
+      skills: _dedupeSkills([...state.profile.skills, ...addedSkills]),
     );
 
     emit(state.success(profile: updatedProfile, isProfileDirty: true));
@@ -371,7 +379,7 @@ extension ProfileMethods on GlobalBloc {
     if (state.profile.skills.isEmpty) {
       emit(state.success(
         profile: state.profile.copyWith(
-          skills: [event.skill],
+          skills: _dedupeSkills([event.skill]),
         ),
       ));
 
@@ -385,16 +393,16 @@ extension ProfileMethods on GlobalBloc {
 
     if (objInState == null) {
       updatedProfile = state.profile.copyWith(
-        skills: [
+        skills: _dedupeSkills([
           ...state.profile.skills,
           event.skill,
-        ],
+        ]),
       );
     } else {
       updatedProfile = state.profile.copyWith(
-        skills: state.profile.skills
+        skills: _dedupeSkills(state.profile.skills
             .map((e) => e.id == event.skill.id ? event.skill : e)
-            .toList(),
+            .toList()),
       );
     }
 
@@ -405,8 +413,10 @@ extension ProfileMethods on GlobalBloc {
       DeleteSkillEvent event, Emitter<GlobalState> emit) {
     emit(state.processing(lastOperation: Operations.deleteSkill));
 
-    var updatedProfile = state.profile.copyWith(
-      skills: state.profile.skills.where((x) => x.id != event.skillId).toList(),
+    final updatedProfile = state.profile.copyWith(
+      skills: _dedupeSkills(
+        state.profile.skills.where((x) => x.id != event.skillId).toList(),
+      ),
     );
 
     emit(state.success(profile: updatedProfile, isProfileDirty: true));
@@ -498,5 +508,33 @@ extension ProfileMethods on GlobalBloc {
         infoMessage: e.toString(),
       ));
     }
+  }
+
+  Profile _sanitizeProfileSkills(Profile profile) {
+    return profile.copyWith(
+      skills: _dedupeSkills(profile.skills),
+    );
+  }
+
+  List<Skill> _dedupeSkills(List<Skill> skills) {
+    final seen = <String>{};
+    final uniqueSkills = <Skill>[];
+
+    for (final skill in skills) {
+      final normalizedName = _normalizeSkillName(skill.name);
+
+      if (normalizedName.isEmpty || seen.contains(normalizedName)) {
+        continue;
+      }
+
+      seen.add(normalizedName);
+      uniqueSkills.add(skill);
+    }
+
+    return uniqueSkills;
+  }
+
+  String _normalizeSkillName(String value) {
+    return value.trim().toLowerCase();
   }
 }
