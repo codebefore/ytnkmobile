@@ -126,6 +126,12 @@ class AuthService extends ServiceBase {
         idToken: token);
   }
 
+  Future<ServiceResponse> syncDevice(String deviceId) async {
+    return postAPIRequest("talent/auth/syncdevice", {
+      "deviceId": deviceId,
+    });
+  }
+
   Future<ServiceResponse> checkUserEmail(String email) async {
     return postAPIRequest("talent/auth/checkUserEmail", {"email": email});
   }

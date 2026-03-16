@@ -1,6 +1,105 @@
 part of 'global_bloc.dart';
 
 extension AuthMethods on GlobalBloc {
+  static const _deviceSyncMaxAttempts = 3;
+  static const _deviceSyncWarningMessage =
+      "Notification setup could not be refreshed. We will retry later.";
+
+  Future<void> _syncDeviceInBackground({
+    String? deviceId,
+  }) async {
+    final normalizedDeviceId = deviceId?.trim();
+    if (normalizedDeviceId != null && normalizedDeviceId.isNotEmpty) {
+      _pendingDeviceSyncId = normalizedDeviceId;
+    }
+
+    _hasPendingDeviceSyncRequest = true;
+    if (_isDeviceSyncWorkerRunning) {
+      return;
+    }
+
+    _isDeviceSyncWorkerRunning = true;
+    try {
+      while (_hasPendingDeviceSyncRequest) {
+        _hasPendingDeviceSyncRequest = false;
+
+        final resolvedDeviceId =
+            await _resolveDeviceIdForSync(_pendingDeviceSyncId);
+        _pendingDeviceSyncId = null;
+        if (resolvedDeviceId.isEmpty) {
+          continue;
+        }
+
+        final isSynced = await _syncDeviceWithRetries(resolvedDeviceId);
+        if (isSynced) {
+          _didShowDeviceSyncWarning = false;
+          continue;
+        }
+
+        if (_hasPendingDeviceSyncRequest) {
+          if (kDebugMode) {
+            debugPrint(
+                "Device sync failed for a previous request. Retrying the latest queued device id.");
+          }
+          continue;
+        }
+
+        if (!_didShowDeviceSyncWarning) {
+          _didShowDeviceSyncWarning = true;
+          EasyLoading.showInfo(_deviceSyncWarningMessage);
+        }
+      }
+    } catch (error) {
+      // Background sync should never block or break login / restore flow.
+      if (kDebugMode) {
+        debugPrint("Device sync threw an exception: $error");
+      }
+
+      if (!_didShowDeviceSyncWarning) {
+        _didShowDeviceSyncWarning = true;
+        EasyLoading.showInfo(_deviceSyncWarningMessage);
+      }
+    } finally {
+      _isDeviceSyncWorkerRunning = false;
+      if (_hasPendingDeviceSyncRequest) {
+        unawaited(_syncDeviceInBackground());
+      }
+    }
+  }
+
+  Future<String> _resolveDeviceIdForSync(String? deviceId) async {
+    var resolvedDeviceId = (deviceId ?? state.deviceId ?? "").trim();
+    if (resolvedDeviceId.isEmpty) {
+      final wonderPushDeviceId = await WonderPush.getDeviceId();
+      resolvedDeviceId = (wonderPushDeviceId ?? "").toString().trim();
+    }
+
+    return resolvedDeviceId;
+  }
+
+  Future<bool> _syncDeviceWithRetries(String deviceId) async {
+    for (var attempt = 1; attempt <= _deviceSyncMaxAttempts; attempt++) {
+      final response = await _authService.syncDevice(deviceId);
+      if (response.isSuccess) {
+        if (kDebugMode) {
+          debugPrint(
+              "Device sync completed on attempt $attempt for current device.");
+        }
+        return true;
+      }
+
+      if (kDebugMode) {
+        debugPrint("Device sync failed on attempt $attempt: ${response.message}");
+      }
+
+      if (attempt < _deviceSyncMaxAttempts) {
+        await Future.delayed(Duration(seconds: attempt));
+      }
+    }
+
+    return false;
+  }
+
   FutureOr<void> _restoreSession(
       RestoreSessionEvent event, Emitter<GlobalState> emit) async {
     emit(state.processing(lastOperation: Operations.restoreSession));
@@ -33,13 +132,17 @@ extension AuthMethods on GlobalBloc {
 
       if (loginResponse.isSuccess && loginResponse.responseObject != null) {
         final userInfo = AuthUserInfo.fromJson(loginResponse.responseObject);
+        final currentDeviceId = state.deviceId;
         emit(state.success(
           isAuthenticated: true,
-          user: userInfo,
+          user: currentDeviceId != null && currentDeviceId.isNotEmpty
+              ? userInfo.copyWith(deviceId: currentDeviceId)
+              : userInfo,
           profileStatus: ProfileStatus.unknown,
           lastOperation: Operations.restoreSession,
         ));
 
+        unawaited(_syncDeviceInBackground());
         add(GetProfileFromEmailEvent(email: userInfo.email));
       } else {
         if (loginResponse.isUnauthorized) {
@@ -70,6 +173,12 @@ extension AuthMethods on GlobalBloc {
     var deviceId = await WonderPush.getDeviceId();
 
     emit(state.success(deviceId: deviceId));
+
+    if (state.isAuthenticated && deviceId != null && deviceId.toString().isNotEmpty) {
+      unawaited(_syncDeviceInBackground(
+        deviceId: deviceId.toString(),
+      ));
+    }
   }
 
   ///Logs in with [email] and [password]
@@ -81,10 +190,14 @@ extension AuthMethods on GlobalBloc {
         await _authService.loginWithEmailPassword(event.email, event.password);
 
     if (response.isSuccess) {
+      final currentDeviceId = state.deviceId;
       emit(state.success(
           isAuthenticated: true,
-          user: response.responseObject,
+          user: currentDeviceId != null && currentDeviceId.isNotEmpty
+              ? response.responseObject?.copyWith(deviceId: currentDeviceId)
+              : response.responseObject,
           profileStatus: ProfileStatus.unknown));
+      unawaited(_syncDeviceInBackground());
     } else {
       emit(state.failure(
         isAuthenticated: false,
@@ -102,10 +215,14 @@ extension AuthMethods on GlobalBloc {
     final response = await _authService.loginWithGoogle();
 
     if (response.isSuccess) {
+      final currentDeviceId = state.deviceId;
       emit(state.success(
           isAuthenticated: true,
-          user: response.responseObject,
+          user: currentDeviceId != null && currentDeviceId.isNotEmpty
+              ? response.responseObject?.copyWith(deviceId: currentDeviceId)
+              : response.responseObject,
           profileStatus: ProfileStatus.unknown));
+      unawaited(_syncDeviceInBackground());
     } else {
       emit(state.failure(
         isAuthenticated: false,

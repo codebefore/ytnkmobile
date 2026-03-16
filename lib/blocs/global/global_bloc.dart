@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wonderpush_flutter/wonderpush_flutter.dart';
 import 'package:ytnkio/core_module.dart';
 import 'package:ytnkio/models/auth/auth_user_info.dart';
@@ -18,7 +20,6 @@ import 'package:ytnkio/models/profile/preferences.dart';
 import 'package:ytnkio/models/profile/skill.dart';
 import 'package:ytnkio/models/profile/profile.dart';
 import 'package:ytnkio/models/profile/work_experience.dart';
-import 'package:ytnkio/blocs/bloc_exports.dart';
 import 'package:ytnkio/repos/avatar_repository.dart';
 import 'package:ytnkio/repos/matching_repository.dart';
 import 'package:ytnkio/repos/profile_repository.dart';
@@ -46,6 +47,10 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
   final ProfileRepository _profileRepository = ProfileRepository();
   final AvatarRepository _avatarRepository = AvatarRepository();
   final MatchRepository _matchRepository = MatchRepository();
+  bool _isDeviceSyncWorkerRunning = false;
+  bool _hasPendingDeviceSyncRequest = false;
+  String? _pendingDeviceSyncId;
+  bool _didShowDeviceSyncWarning = false;
 
   GlobalBloc() : super(GlobalState.initial()) {
     //landing related events
