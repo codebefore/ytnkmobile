@@ -36,6 +36,7 @@ class MatchSkillCloud extends StatelessWidget {
                 ...match.skillFitness.map((skill) => MatchSkillChip(
                   skillName: skill.name,
                   score: skill.score,
+                  isRelevant: skill.isRelevant ?? true,
                 )),
               ],
             ),

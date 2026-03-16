@@ -4,11 +4,9 @@ import 'dart:convert';
 class ScoreItem {
   String name;
   int score;
+  bool? isRelevant;
 
-  ScoreItem(
-    this.name,
-    this.score,
-  );
+  ScoreItem(this.name, this.score, {this.isRelevant});
 
   static List<ScoreItem> fromList(List<dynamic> list) {
     return list
@@ -20,6 +18,7 @@ class ScoreItem {
     return <String, dynamic>{
       'name': name,
       'score': score,
+      'isRelevant': isRelevant,
     };
   }
 
@@ -27,6 +26,7 @@ class ScoreItem {
     return ScoreItem(
       (map['name'] ?? "").toString(),
       (map['score'] as num?)?.round() ?? 0,
+      isRelevant: map['isRelevant'] as bool?,
     );
   }
 
