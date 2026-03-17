@@ -148,6 +148,8 @@ class AuthService extends ServiceBase {
         await FirebaseAuth.instance.signOut();
       }
 
+      await clearIdToken();
+
       return ServiceResponse.success();
     } catch (e) {
       return ServiceResponse.fail("Unknown exception: $e");

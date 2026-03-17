@@ -28,39 +28,95 @@ class ServiceBase {
 
   final String livenessCheckUrl = "/iamhere";
 
-  Future<ServiceResponse<String>> postAPIRequest(
-      String service, Map<String, dynamic> parameters,
-      {String idToken = "", bool includeAuthorization = true}) async {
-    final url = "$apiUrl/$service";
+  Map<String, String> _buildHeaders(
+    String idToken, {
+    required bool includeAuthorization,
+    bool includeJsonContentType = true,
+  }) {
+    final headers = <String, String>{};
+
+    if (includeJsonContentType) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    if (includeAuthorization && idToken.isNotEmpty) {
+      headers["Authorization"] = "Bearer $idToken";
+    }
+
+    return headers;
+  }
+
+  Future<String> _resolveAuthToken({
+    String preferredToken = "",
+    bool forceRefresh = false,
+  }) async {
+    if (preferredToken.isNotEmpty && !forceRefresh) {
+      await setIdToken(preferredToken);
+      return preferredToken;
+    }
 
     try {
-      if (includeAuthorization) {
-        if (idToken.isNotEmpty) {
-          setIdToken(idToken);
-        } else {
-          idToken = await getIdToken();
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final firebaseToken = await currentUser.getIdToken(forceRefresh);
+        if (firebaseToken != null && firebaseToken.isNotEmpty) {
+          await setIdToken(firebaseToken);
+          return firebaseToken;
         }
-      } else {
-        idToken = "";
       }
-
-      final headers = <String, String>{
-        "Content-Type": "application/json",
-      };
-      if (includeAuthorization && idToken.isNotEmpty) {
-        headers["Authorization"] = "Bearer $idToken";
-      }
-
-      // Log request
+    } catch (e) {
       if (kDebugMode) {
-        debugPrint('🔵 API POST Request: $url');
+        debugPrint('🔴 Failed to resolve Firebase token: $e');
+      }
+    }
+
+    if (forceRefresh) {
+      return "";
+    }
+
+    if (preferredToken.isNotEmpty) {
+      await setIdToken(preferredToken);
+      return preferredToken;
+    }
+
+    return getStoredIdToken();
+  }
+
+  Future<http.Response> _executeRequest({
+    required String method,
+    required String url,
+    required Future<http.Response> Function(Map<String, String> headers) send,
+    required bool includeAuthorization,
+    String idToken = "",
+    String? bodyLog,
+    bool includeJsonContentType = true,
+    bool logResponseBody = true,
+  }) async {
+    var resolvedToken = "";
+    if (includeAuthorization) {
+      resolvedToken = await _resolveAuthToken(preferredToken: idToken);
+    }
+
+    Future<http.Response> performRequest(
+      String token, {
+      required bool isRetry,
+    }) async {
+      final headers = _buildHeaders(
+        token,
+        includeAuthorization: includeAuthorization,
+        includeJsonContentType: includeJsonContentType,
+      );
+
+      if (kDebugMode) {
+        final retrySuffix = isRetry ? " (retry with fresh token)" : "";
+        debugPrint('🔵 API $method Request$retrySuffix: $url');
         debugPrint('🔵 Headers: $headers');
-        debugPrint('🔵 Body: ${json.encode(parameters)}');
+        if (bodyLog != null) {
+          debugPrint('🔵 Body: $bodyLog');
+        }
       }
 
-      final response = await http
-          .post(Uri.parse(url), headers: headers, body: json.encode(parameters))
-          .onError((error, stackTrace) {
+      final response = await send(headers).onError((error, stackTrace) {
         if (kDebugMode) {
           debugPrint('🔴 API Error: $error');
         }
@@ -72,12 +128,47 @@ class ServiceBase {
         return http.Response('Timeout.', 500);
       });
 
-      // Log response
       if (kDebugMode) {
         debugPrint('🟢 API Response: ${response.statusCode} - $url');
-        debugPrint(
-            '🟢 Body: ${response.body.length > 500 ? "${response.body.substring(0, 500)}..." : response.body}');
+        if (logResponseBody) {
+          final responseBody = response.body;
+          debugPrint(
+              '🟢 Body: ${responseBody.length > 500 ? "${responseBody.substring(0, 500)}..." : responseBody}');
+        }
       }
+
+      return response;
+    }
+
+    var response = await performRequest(resolvedToken, isRetry: false);
+    if (response.statusCode != 401 || !includeAuthorization) {
+      return response;
+    }
+
+    final freshToken = await _resolveAuthToken(forceRefresh: true);
+    if (freshToken.isEmpty || freshToken == resolvedToken) {
+      return response;
+    }
+
+    return performRequest(freshToken, isRetry: true);
+  }
+
+  Future<ServiceResponse<String>> postAPIRequest(
+      String service, Map<String, dynamic> parameters,
+      {String idToken = "", bool includeAuthorization = true}) async {
+    final url = "$apiUrl/$service";
+    final requestBody = json.encode(parameters);
+
+    try {
+      final response = await _executeRequest(
+        method: "POST",
+        url: url,
+        includeAuthorization: includeAuthorization,
+        idToken: idToken,
+        bodyLog: requestBody,
+        send: (headers) =>
+            http.post(Uri.parse(url), headers: headers, body: requestBody),
+      );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         if (response.body.isEmpty) {
@@ -102,27 +193,24 @@ class ServiceBase {
       Map<String, String> parameters, String fileParameterName, File file,
       {String idToken = ""}) async {
     try {
-      if (idToken.isNotEmpty) {
-        setIdToken(idToken);
-      } else {
-        idToken = await getIdToken();
-      }
-
-      var request =
-          http.MultipartRequest("POST", Uri.parse("$apiUrl/$service"));
-
-      request.files.add(await http.MultipartFile.fromPath(
-          fileParameterName, file.path,
-          filename: file.path.split("/").last));
-
-      request.headers.addAll({
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
-      });
-
-      request.fields.addAll(parameters);
-
-      var response = await request.send();
+      final url = "$apiUrl/$service";
+      final response = await _executeRequest(
+        method: "POST Multipart",
+        url: url,
+        includeAuthorization: true,
+        idToken: idToken,
+        bodyLog: 'Fields: $parameters, File: ${file.path.split("/").last}',
+        includeJsonContentType: false,
+        send: (headers) async {
+          final request = http.MultipartRequest("POST", Uri.parse(url));
+          request.files.add(await http.MultipartFile.fromPath(
+              fileParameterName, file.path,
+              filename: file.path.split("/").last));
+          request.headers.addAll(headers);
+          request.fields.addAll(parameters);
+          return http.Response.fromStream(await request.send());
+        },
+      );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return ServiceResponse.success();
@@ -140,24 +228,18 @@ class ServiceBase {
       String service, Map<String, dynamic> parameters,
       {String idToken = ""}) async {
     try {
-      if (idToken.isNotEmpty) {
-        setIdToken(idToken);
-      } else {
-        idToken = await getIdToken();
-      }
-
-      final response = await http
-          .post(Uri.parse("$apiUrl/$service"),
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer $idToken"
-              },
-              body: json.encode(parameters))
-          .onError((error, stackTrace) {
-        return http.Response('Network problem.', 500);
-      }).timeout(const Duration(seconds: 20), onTimeout: () {
-        return http.Response('Timeout.', 500);
-      });
+      final url = "$apiUrl/$service";
+      final requestBody = json.encode(parameters);
+      final response = await _executeRequest(
+        method: "POST",
+        url: url,
+        includeAuthorization: true,
+        idToken: idToken,
+        bodyLog: requestBody,
+        logResponseBody: false,
+        send: (headers) =>
+            http.post(Uri.parse(url), headers: headers, body: requestBody),
+      );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         if (response.body.isEmpty) {
@@ -180,40 +262,13 @@ class ServiceBase {
     final url = "$apiUrl/$service";
 
     try {
-      if (idToken.isNotEmpty) {
-        setIdToken(idToken);
-      } else {
-        idToken = await getIdToken();
-      }
-
-      // Log request
-      if (kDebugMode) {
-        debugPrint('🔵 API GET Request: $url');
-        debugPrint(
-            '🔵 Headers: {"Content-Type": "application/json", "Authorization": "Bearer $idToken"}');
-      }
-
-      final response = await http.get(Uri.parse(url), headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
-      }).onError((error, stackTrace) {
-        if (kDebugMode) {
-          debugPrint('🔴 API Error: $error');
-        }
-        return http.Response('Network problem.', 500);
-      }).timeout(const Duration(seconds: 20), onTimeout: () {
-        if (kDebugMode) {
-          debugPrint('🔴 API Timeout: $url');
-        }
-        return http.Response('Timeout.', 500);
-      });
-
-      // Log response
-      if (kDebugMode) {
-        debugPrint('🟢 API Response: ${response.statusCode} - $url');
-        debugPrint(
-            '🟢 Body: ${response.body.length > 500 ? "${response.body.substring(0, 500)}..." : response.body}');
-      }
+      final response = await _executeRequest(
+        method: "GET",
+        url: url,
+        includeAuthorization: true,
+        idToken: idToken,
+        send: (headers) => http.get(Uri.parse(url), headers: headers),
+      );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         if (response.body.isEmpty) {
@@ -239,27 +294,23 @@ class ServiceBase {
     return prefs.setString("idToken", value);
   }
 
-  Future<String> getIdToken() async {
+  Future<bool> clearIdToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove("idToken");
+  }
+
+  Future<String> getStoredIdToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("idToken") ?? "";
   }
 
+  Future<String> getIdToken({bool forceRefresh = false}) async {
+    return _resolveAuthToken(forceRefresh: forceRefresh);
+  }
+
   /// Forces a fresh token from Firebase and stores it
   Future<String> getFreshIdToken() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final freshToken = await user.getIdToken(true); // forceRefresh=true
-        if (freshToken != null) {
-          await setIdToken(freshToken);
-          return freshToken;
-        }
-      }
-    } catch (e) {
-      debugPrint('🔴 Failed to refresh Firebase token: $e');
-    }
-    // Fallback to stored token
-    return await getIdToken();
+    return getIdToken(forceRefresh: true);
   }
 }
 
