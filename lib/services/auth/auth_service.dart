@@ -6,12 +6,28 @@ import 'package:ytnkio/services/base/service_response.dart';
 import 'package:ytnkio/services/base/service_base.dart';
 
 class AuthService extends ServiceBase {
+  bool _userExists(dynamic responseObject) {
+    if (responseObject is bool) {
+      return responseObject;
+    }
+
+    return responseObject?.toString().trim().toLowerCase() == "true";
+  }
+
   Future<ServiceResponse<AuthUserInfo>> loginWithEmailPassword(
       String email, String password) async {
     try {
       var isUserChecked = await checkUserEmail(email);
 
       if (!isUserChecked.isSuccess) {
+        return ServiceResponse.fail(
+          isUserChecked.message.isNotEmpty
+              ? isUserChecked.message
+              : "Unable to verify user",
+        );
+      }
+
+      if (!_userExists(isUserChecked.responseObject)) {
         return ServiceResponse.fail("User not found");
       }
 
@@ -67,7 +83,7 @@ class AuthService extends ServiceBase {
         return ServiceResponse.fail(checkUserCallResponse.message);
       }
 
-      if (((checkUserCallResponse.responseObject ?? "false") == "false")) {
+      if (!_userExists(checkUserCallResponse.responseObject)) {
         return ServiceResponse.fail("User not found");
       }
 
