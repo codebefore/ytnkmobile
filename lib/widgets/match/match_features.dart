@@ -10,6 +10,10 @@ class MatchFeatures extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final salarySubtitle = match.salaryExpectationUnit.trim().isEmpty
+        ? "${match.salaryExpectationMin} - ${match.salaryExpectationMax}"
+        : "${match.salaryExpectationMin} - ${match.salaryExpectationMax} ${match.salaryExpectationUnit}";
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,13 +28,14 @@ class MatchFeatures extends StatelessWidget {
                   title: GlobalTexts.current.MATCH_PAGE_feature_1_title,
                   subtitle: match.workingMethod),
             ),
-            Flexible(
-              flex: 1,
-              child: MatchFeatureBox(
-                  icon: Icons.attach_money_outlined,
-                  title: GlobalTexts.current.MATCH_PAGE_feature_2_title,
-                  subtitle: "${match.salaryExpectationMin} - ${match.salaryExpectationMax} ${match.salaryExpectationUnit}"),
-            ),
+            if (match.hasVisibleSalary)
+              Flexible(
+                flex: 1,
+                child: MatchFeatureBox(
+                    icon: Icons.attach_money_outlined,
+                    title: GlobalTexts.current.MATCH_PAGE_feature_2_title,
+                    subtitle: salarySubtitle),
+              ),
           ],
         ),
         Flex(

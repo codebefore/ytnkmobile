@@ -21,6 +21,7 @@ class Match {
   String salaryExpectationMin;
   String salaryExpectationMax;
   String salaryExpectationUnit;
+  bool showSalaryToTalent;
   String employmentScope;
   String typeOfPosition;
   List<ScoreItem> skillFitness;
@@ -47,6 +48,7 @@ class Match {
     required this.salaryExpectationMin,
     required this.salaryExpectationMax,
     required this.salaryExpectationUnit,
+    required this.showSalaryToTalent,
     required this.employmentScope,
     required this.typeOfPosition,
     required this.skillFitness,
@@ -79,6 +81,9 @@ class Match {
       salaryExpectationMin: map['salaryExpectationMin'] ?? '',
       salaryExpectationMax: map['salaryExpectationMax'] ?? '',
       salaryExpectationUnit: map['salaryExpectationUnit'] ?? '',
+      showSalaryToTalent: map['showSalaryToTalent'] is bool
+          ? map['showSalaryToTalent']
+          : true,
       employmentScope: map['employmentScope'] ?? '',
       typeOfPosition: map['typeOfPosition'] ?? '',
       skillFitness: List<ScoreItem>.from((map['skillFitness'] as List<dynamic>?)
@@ -114,6 +119,7 @@ class Match {
       'salaryExpectationMin': salaryExpectationMin,
       'salaryExpectationMax': salaryExpectationMax,
       'salaryExpectationUnit': salaryExpectationUnit,
+      'showSalaryToTalent': showSalaryToTalent,
       'employmentScope': employmentScope,
       'typeOfPosition': typeOfPosition,
       'skillFitness': skillFitness.map((x) => x.toMap()).toList(),
@@ -172,4 +178,9 @@ class Match {
     }
     return status;
   }
+
+  bool get hasVisibleSalary =>
+      showSalaryToTalent &&
+      salaryExpectationMin.trim().isNotEmpty &&
+      salaryExpectationMax.trim().isNotEmpty;
 }
