@@ -693,6 +693,26 @@ class TextFileTR extends TextFile {
   @override
   String MATCH_PAGE_radar_title = "Eşleşme Radarı";
   @override
+  String MATCH_PAGE_radarShort_physicalConditions = "Fiziksel";
+  @override
+  String MATCH_PAGE_radarShort_employmentProfile = "İstihdam";
+  @override
+  String MATCH_PAGE_radarShort_technicalSkills = "Beceri";
+  @override
+  String MATCH_PAGE_radarShort_rewardsExpectations = "Ödül";
+  @override
+  String MATCH_PAGE_radarShort_organizationalFit = "Uyum";
+  @override
+  String MATCH_PAGE_radar_physicalConditions = "Fiziksel\nKoşullar";
+  @override
+  String MATCH_PAGE_radar_employmentProfile = "İstihdam\nProfili";
+  @override
+  String MATCH_PAGE_radar_technicalSkills = "Teknik\nBeceriler";
+  @override
+  String MATCH_PAGE_radar_rewardsExpectations = "Ödül ve\nBeklentiler";
+  @override
+  String MATCH_PAGE_radar_organizationalFit = "Kurumsal\nUyum";
+  @override
   String MATCH_PAGE_skillCloud_title = "Sahip olunması gereken yetkinler";
   @override
   String MATCH_PAGE_accordion_title_1 = "Sorumluluklar";

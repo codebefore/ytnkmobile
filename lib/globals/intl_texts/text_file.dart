@@ -298,6 +298,16 @@ abstract class TextFile {
   String get MATCH_PAGE_feature_3_title;
   String get MATCH_PAGE_feature_4_title;
   String get MATCH_PAGE_radar_title;
+  String get MATCH_PAGE_radarShort_physicalConditions;
+  String get MATCH_PAGE_radarShort_employmentProfile;
+  String get MATCH_PAGE_radarShort_technicalSkills;
+  String get MATCH_PAGE_radarShort_rewardsExpectations;
+  String get MATCH_PAGE_radarShort_organizationalFit;
+  String get MATCH_PAGE_radar_physicalConditions;
+  String get MATCH_PAGE_radar_employmentProfile;
+  String get MATCH_PAGE_radar_technicalSkills;
+  String get MATCH_PAGE_radar_rewardsExpectations;
+  String get MATCH_PAGE_radar_organizationalFit;
   String get MATCH_PAGE_skillCloud_title;
   String get MATCH_PAGE_accordion_title_1;
   String get MATCH_PAGE_accordion_title_2;

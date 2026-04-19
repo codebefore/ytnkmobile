@@ -693,6 +693,26 @@ class TextFileGB extends TextFile {
   @override
   String MATCH_PAGE_radar_title = "Match Radar";
   @override
+  String MATCH_PAGE_radarShort_physicalConditions = "Physical";
+  @override
+  String MATCH_PAGE_radarShort_employmentProfile = "Profile";
+  @override
+  String MATCH_PAGE_radarShort_technicalSkills = "Skills";
+  @override
+  String MATCH_PAGE_radarShort_rewardsExpectations = "Rewards";
+  @override
+  String MATCH_PAGE_radarShort_organizationalFit = "Culture";
+  @override
+  String MATCH_PAGE_radar_physicalConditions = "Physical\nConditions";
+  @override
+  String MATCH_PAGE_radar_employmentProfile = "Employment\nProfile";
+  @override
+  String MATCH_PAGE_radar_technicalSkills = "Technical\nSkills";
+  @override
+  String MATCH_PAGE_radar_rewardsExpectations = "Rewards &\nExpectations";
+  @override
+  String MATCH_PAGE_radar_organizationalFit = "Organizational\nFit";
+  @override
   String MATCH_PAGE_skillCloud_title = "Skills that must be mastered";
   @override
   String MATCH_PAGE_accordion_title_1 = "Responsibilities";

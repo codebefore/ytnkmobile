@@ -705,6 +705,26 @@ class TextFileES extends TextFile {
   @override
   String MATCH_PAGE_radar_title = "Radar de Coincidencias";
   @override
+  String MATCH_PAGE_radarShort_physicalConditions = "Físico";
+  @override
+  String MATCH_PAGE_radarShort_employmentProfile = "Perfil";
+  @override
+  String MATCH_PAGE_radarShort_technicalSkills = "Técnicas";
+  @override
+  String MATCH_PAGE_radarShort_rewardsExpectations = "Beneficios";
+  @override
+  String MATCH_PAGE_radarShort_organizationalFit = "Ajuste";
+  @override
+  String MATCH_PAGE_radar_physicalConditions = "Condiciones\nFísicas";
+  @override
+  String MATCH_PAGE_radar_employmentProfile = "Perfil de\nEmpleo";
+  @override
+  String MATCH_PAGE_radar_technicalSkills = "Habilidades\nTécnicas";
+  @override
+  String MATCH_PAGE_radar_rewardsExpectations = "Recompensas y\nExpectativas";
+  @override
+  String MATCH_PAGE_radar_organizationalFit = "Ajuste\nOrganizacional";
+  @override
   String MATCH_PAGE_skillCloud_title = "Nube de Habilidades";
   @override
   String MATCH_PAGE_accordion_title_1 = "Responsabilidades";
