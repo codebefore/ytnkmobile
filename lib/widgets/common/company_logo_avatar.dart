@@ -19,12 +19,13 @@ class CompanyLogoAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageProvider = _buildImageProvider(companyLogo);
+    final hasLogo = imageProvider != null;
 
     return CircleAvatar(
       radius: radius,
-      backgroundColor: Colors.indigo.shade50,
+      backgroundColor: hasLogo ? Colors.transparent : Colors.indigo.shade50,
       backgroundImage: imageProvider,
-      child: imageProvider == null
+      child: !hasLogo
           ? Text(
               _companyInitials(companyName),
               style: TextStyle(
