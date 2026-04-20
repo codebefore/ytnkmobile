@@ -4,7 +4,7 @@ import 'package:ytnkio/widgets/match/match_feature_box.dart';
 import 'package:ytnkio/models/match/match.dart';
 
 class MatchFeatures extends StatelessWidget {
-  const MatchFeatures({ required this.match, super.key});
+  const MatchFeatures({required this.match, super.key});
 
   final Match match;
 
@@ -12,7 +12,7 @@ class MatchFeatures extends StatelessWidget {
   Widget build(BuildContext context) {
     final salarySubtitle = match.salaryExpectationUnit.trim().isEmpty
         ? "${match.salaryExpectationMin} - ${match.salaryExpectationMax}"
-        : "${match.salaryExpectationMin} - ${match.salaryExpectationMax} ${match.salaryExpectationUnit}";
+        : "${match.salaryExpectationUnit}\n${match.salaryExpectationMin} - ${match.salaryExpectationMax}";
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -41,13 +41,6 @@ class MatchFeatures extends StatelessWidget {
         Flex(
           direction: Axis.horizontal,
           children: [
-            Flexible(
-              flex: 1,
-              child: MatchFeatureBox(
-                  icon: Icons.watch_later_outlined,
-                  title: GlobalTexts.current.MATCH_PAGE_feature_3_title,
-                  subtitle: match.employmentScope),
-            ),
             Flexible(
               flex: 1,
               child: MatchFeatureBox(

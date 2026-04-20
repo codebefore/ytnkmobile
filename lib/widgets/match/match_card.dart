@@ -254,6 +254,7 @@ class RadarVertex extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Text(
             text!,
+            textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 12, color: color, fontWeight: FontWeight.bold),
           )

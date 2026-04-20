@@ -685,7 +685,7 @@ class TextFileGB extends TextFile {
   @override
   String MATCH_PAGE_feature_1_title = "Work Type";
   @override
-  String MATCH_PAGE_feature_2_title = "Expected Salary";
+  String MATCH_PAGE_feature_2_title = "Salary";
   @override
   String MATCH_PAGE_feature_3_title = "Scope";
   @override
@@ -713,7 +713,7 @@ class TextFileGB extends TextFile {
   @override
   String MATCH_PAGE_radar_organizationalFit = "Organizational\nFit";
   @override
-  String MATCH_PAGE_skillCloud_title = "Skills that must be mastered";
+  String MATCH_PAGE_skillCloud_title = "Skill requirements";
   @override
   String MATCH_PAGE_accordion_title_1 = "Responsibilities";
   @override

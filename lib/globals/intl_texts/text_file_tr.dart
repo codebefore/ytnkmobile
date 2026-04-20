@@ -685,7 +685,7 @@ class TextFileTR extends TextFile {
   @override
   String MATCH_PAGE_feature_1_title = "Çalışma Türü";
   @override
-  String MATCH_PAGE_feature_2_title = "Beklenen Maaş";
+  String MATCH_PAGE_feature_2_title = "Maaş Paketi";
   @override
   String MATCH_PAGE_feature_3_title = "Kapsam";
   @override

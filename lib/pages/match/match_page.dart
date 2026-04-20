@@ -66,7 +66,7 @@ class MatchPage extends StatelessWidget {
                   MatchFeatures(match: match),
                   SizedBox(height: 30),
                   MatchRadar(match: match),
-                  SizedBox(height: 30),
+                  SizedBox(height: 48),
                   MatchSkillCloud(match: match),
                   SizedBox(height: 30),
                   MatchAccordion(match: match),

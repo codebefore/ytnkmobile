@@ -12,35 +12,11 @@ class MatchSkillChip extends StatelessWidget {
       this.isRelevant = true});
 
   Color _getAccentColor() {
-    if (!isRelevant) {
-      return Colors.grey.shade500;
-    }
-
-    if (score >= 80) {
-      return Colors.green.shade600;
-    }
-
-    if (score >= 60) {
-      return Colors.amber.shade700;
-    }
-
-    return Colors.red.shade700;
+    return isRelevant ? Colors.green.shade600 : Colors.grey.shade500;
   }
 
   Color _getLabelColor() {
-    if (!isRelevant) {
-      return Colors.grey.shade700;
-    }
-
-    if (score >= 80) {
-      return Colors.green.shade700;
-    }
-
-    if (score >= 60) {
-      return Colors.amber.shade900;
-    }
-
-    return Colors.red.shade700;
+    return isRelevant ? Colors.green.shade700 : Colors.grey.shade700;
   }
 
   @override
