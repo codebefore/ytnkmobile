@@ -727,11 +727,11 @@ class TextFileES extends TextFile {
   @override
   String MATCH_PAGE_skillCloud_title = "Nube de Habilidades";
   @override
-  String MATCH_PAGE_accordion_title_1 = "Responsabilidades";
+  String MATCH_PAGE_accordion_title_1 = "Sobre nosotros";
   @override
-  String MATCH_PAGE_accordion_title_2 = "Requisitos";
+  String MATCH_PAGE_accordion_title_2 = "Equipo y responsabilidades";
   @override
-  String MATCH_PAGE_accordion_title_3 = "Acerca de nosotros";
+  String MATCH_PAGE_accordion_title_3 = "Requisitos";
   @override
   String MATCH_PAGE_statusAccepted = "Aceptado";
   @override

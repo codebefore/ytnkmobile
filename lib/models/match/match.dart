@@ -9,6 +9,7 @@ class Match {
   String requirements;
   String responsibilities;
   String aboutUs;
+  String whatWeOffer;
   String companyId;
   String companyName;
   String companyLogo;
@@ -36,6 +37,7 @@ class Match {
     required this.requirements,
     required this.responsibilities,
     required this.aboutUs,
+    required this.whatWeOffer,
     required this.companyId,
     required this.companyName,
     required this.companyLogo,
@@ -69,6 +71,7 @@ class Match {
       requirements: map['requirements'] ?? '',
       responsibilities: map['responsibilities'] ?? '',
       aboutUs: map['aboutUs'] ?? '',
+      whatWeOffer: map['whatWeOffer'] ?? '',
       companyId: map['companyId'] ?? '',
       companyName: map['companyName'] ?? '',
       companyLogo: map['companyLogo'] ?? '',
@@ -107,6 +110,7 @@ class Match {
       'requirements': requirements,
       'responsibilities': responsibilities,
       'aboutUs': aboutUs,
+      'whatWeOffer': whatWeOffer,
       'companyId': companyId,
       'companyName': companyName,
       'companyLogo': companyLogo,

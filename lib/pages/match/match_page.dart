@@ -55,24 +55,22 @@ class MatchPage extends StatelessWidget {
         },
         builder: (context, state) => Column(children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 30),
-                  MatchHeader(match: match),
-                  SizedBox(height: 30),
-                  MatchMiniFeatures(match: match),
-                  SizedBox(height: 30),
-                  MatchFeatures(match: match),
-                  SizedBox(height: 30),
-                  MatchRadar(match: match),
-                  SizedBox(height: 48),
-                  MatchSkillCloud(match: match),
-                  SizedBox(height: 30),
-                  MatchAccordion(match: match),
-                  SizedBox(height: 30),
-                ],
-              ),
+            child: ListView(
+              children: [
+                SizedBox(height: 30),
+                MatchHeader(match: match),
+                SizedBox(height: 30),
+                MatchMiniFeatures(match: match),
+                SizedBox(height: 30),
+                MatchFeatures(match: match),
+                SizedBox(height: 30),
+                MatchRadar(match: match),
+                SizedBox(height: 48),
+                MatchSkillCloud(match: match),
+                SizedBox(height: 30),
+                MatchAccordion(match: match),
+                SizedBox(height: 30),
+              ],
             ),
           ),
           if (isActionable)

@@ -715,11 +715,11 @@ class TextFileTR extends TextFile {
   @override
   String MATCH_PAGE_skillCloud_title = "Sahip olunması gereken yetkinler";
   @override
-  String MATCH_PAGE_accordion_title_1 = "Sorumluluklar";
+  String MATCH_PAGE_accordion_title_1 = "Hakkımızda";
   @override
-  String MATCH_PAGE_accordion_title_2 = "Gereklilikler";
+  String MATCH_PAGE_accordion_title_2 = "Ekip ve Sorumluluklar";
   @override
-  String MATCH_PAGE_accordion_title_3 = "Hakkımızda";
+  String MATCH_PAGE_accordion_title_3 = "Gereksinimler";
   @override
   String MATCH_PAGE_statusAccepted = "Kabul Edildi";
   @override

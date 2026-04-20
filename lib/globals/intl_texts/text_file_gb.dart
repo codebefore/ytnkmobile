@@ -715,11 +715,11 @@ class TextFileGB extends TextFile {
   @override
   String MATCH_PAGE_skillCloud_title = "Skill requirements";
   @override
-  String MATCH_PAGE_accordion_title_1 = "Responsibilities";
+  String MATCH_PAGE_accordion_title_1 = "About Us";
   @override
-  String MATCH_PAGE_accordion_title_2 = "Requirements";
+  String MATCH_PAGE_accordion_title_2 = "Team & Responsibilities";
   @override
-  String MATCH_PAGE_accordion_title_3 = "About Us";
+  String MATCH_PAGE_accordion_title_3 = "Requirements";
   @override
   String MATCH_PAGE_statusAccepted = "Accepted";
   @override
